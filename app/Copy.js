@@ -2,9 +2,11 @@
 * @Author: 21746209
 * @Date:   2018-08-18 17:42:54
 * @Last Modified by:   21746209
-* @Last Modified time: 2018-08-18 20:43:42
+* @Last Modified time: 2018-08-19 19:26:21
 */
 import React from "react";
+import solarLunar from 'solarLunar';
+
 export default class Copy extends React.Component{
 	constructor(props){
 		super(props);
@@ -42,12 +44,34 @@ export default class Copy extends React.Component{
 		// 		domArr.push(<tr key={i}>{temp}<tr>)
 		// 	}
 		// }
+		//solarLunar.solar2lunar(year,month-1,arr[i*7+j]).dayCn这套方法就是把当前的农历转换为阴历
+		//部分的转换问题主要是使月份温和
 		function showDay(){
 			var domArr = [];
-			for(var i=0;i<Arr.length;i++){
+			for(var i=0;i<arr.length/7;i++){
 				var temp = [];
 				for(var j=0;j<7;j++){
-					temp.push(<td>{Arr[i][j]}</td>)
+					if(i*7+j<benyue1haoxingqiji){
+						//上个月的尾巴
+						temp.push(<td>
+						{arr[i*7+j]}
+						<br/>
+						{solarLunar.solar2lunar(year,month-1,arr[i*7+j]).dayCn}
+						</td>)
+					}else if(i*7+j>benyue1haoxingqiji+benyuegongjitian){
+						temp.push(<td>
+						{arr[i*7+j]}
+						<br/>
+						{solarLunar.solar2lunar(year,month-1,arr[i*7+j]).dayCn}
+						</td>)	
+					}else {
+						temp.push(<td>
+						{arr[i*7+j]}
+						<br/>
+						{solarLunar.solar2lunar(year,month,arr[i*7+j]).dayCn}
+						</td>)	
+					}
+
 				}
 				domArr.push(<tr>{temp}</tr>)
 			}

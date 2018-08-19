@@ -2,7 +2,7 @@
 * @Author: 21746209
 * @Date:   2018-08-09 18:52:56
 * @Last Modified by:   21746209
-* @Last Modified time: 2018-08-18 20:24:13
+* @Last Modified time: 2018-08-19 19:25:03
 */
 import React from "react"
 
@@ -55,7 +55,6 @@ export default class MonthView extends React.Component{
 					<th>四</th>
 					<th>五</th>
 					<th>六</th>
-
 				</tr>
 					{showARR()}
 				</tbody>
