@@ -1,0 +1,1315 @@
+/*接口定义*/
+var getHealthReportList = '/api/getHealthReportList';// 獲取健检报告列表
+var getScreenMemberList = '/api/getScreenMemberList';// 搜尋異常員工
+var getMemberAbnItemList = '/api/getMemberAbnItemList';// 獲取員工的異常項目列表
+var getRecheckAdviseList = '/api/getRecheckAdviseList';// 獲取員工複檢提醒的歷史紀錄
+var giveRecheckAdvise = '/api/giveRecheckAdvise';// 指定員工給出複檢提醒
+var giveAllRecheckAdvise = '/api/giveAllRecheckAdvise';// 員工篩選列表中的提醒所有
+var getCheckItemList = '/api/getCheckItemList';// 获取检查项目
+var outputScreenMemberList = '/api/outputScreenMemberList';// 获取检查项目
+var getUserNeverUsePrescription = '/api/getUserNeverUsePrescription';// 獲取員工在當前社群下未參加過且已發佈的處方箋
+var givePrescriptionToUser = '/api/givePrescriptionToUser';// 批量给員工推荐处方笺
+var getPrescriptionList = '/api/getPrescriptionList';// 獲取處方箋的列表
+
+/*******************************************************************************
+ * 功能：定义部分全局变量
+ ******************************************************************************/
+var pageSize = 10;// 一頁顯示多少條紀錄
+var reportListdata = {};// 健检报告列表數據
+var screenMemberList = {};// 異常員工列表
+
+
+$(function() {
+	if (checkUserLogin()) {
+		pageInit();
+		openChatWin();
+		toastrInit();
+	}
+});
+
+/*******************************************************************************
+ * 功能：頁面初始化
+ ******************************************************************************/
+function pageInit() {
+	$('#hc1-menu2').addClass('active').siblings().removeClass(
+			'active');
+	// 點擊關閉聊天對話框時
+	$('#msg-close').on('click', function() {
+		setCookie('chatwin', 'hide' + ';path=/');
+		$("#userdatalistPanel").addClass("col-lg-12").removeClass("col-lg-8");
+		$('#m-msg').addClass('hidden');
+	});
+	getReportList();
+	setReportItem(examType);
+	$("#stateSelect").val('0');
+	$('.single-select').multiselect();
+	multilayerModal();//处理多层弹窗问题
+	
+	//快捷回覆
+	/*$('#give-advise-modal1 .fastReply button').on('click', function(){
+		if($(this).attr('aria-expanded')=='true') return false;
+		//更新快捷回覆列表
+		getFastReplyList($(this).parents('.fastReply').find('ul'), 1);
+	});
+	$('#give-advise-modal2 .fastReply button').on('click', function(){
+		if($(this).attr('aria-expanded')=='true') return false;
+		//更新快捷回覆列表
+		getFastReplyList($(this).parents('.fastReply').find('ul'), 2);
+	});
+	$('#custom-width-modal4 .fastReply button').on('click', function(){
+		if($(this).attr('aria-expanded')=='true') return false;
+		//更新快捷回覆列表
+		getFastReplyList($(this).parents('.fastReply').find('ul'), 4);
+	});*/
+}
+/*******************************************************************************
+ * 提示框初始化
+ ******************************************************************************/
+function toastrInit() {
+	toastr.options = {
+		"closeButton" : false,
+		"debug" : false,
+		"newestOnTop" : false,
+		"progressBar" : false,
+		"positionClass" : "toast-top-center",
+		"preventDuplicates" : true,
+		"onclick" : null,
+		"showDuration" : "300",
+		"hideDuration" : "1000",
+		"timeOut" : "5000",
+		"extendedTimeOut" : "1000",
+		"showEasing" : "swing",
+		"hideEasing" : "linear",
+		"showMethod" : "fadeIn",
+		"hideMethod" : "fadeOut"
+	};
+}
+/*******************************************************************************
+ * 功能：获取健检报告列表
+ ******************************************************************************/
+function getReportList() {
+	$.ajax({
+		type : 'post',
+		url : getHealthReportList,
+		dataType : 'json',
+		cache : false,
+		async: false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+            "starttime":946656000000,
+            "endtime":4102416000000,
+            "pageSize":1000,
+            "pageIndex":1
+		},
+		success : function(data) {
+			if (data['status'] == "true") {
+				reportListdata = data
+				setReportList(reportListdata.reportList);
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：設置健檢報告選擇項并初始化 
+ * params:data 健檢報告列表數據
+ ******************************************************************************/
+function setReportList(data) {	
+	if(data.length!=0){	
+		$("#reportSelect").empty();
+		for (var i = 0; i < data.length; i++) {
+			$("#reportSelect").append(
+					'<option value="' + data[i].reportId + '">'
+							+ data[i].reportName + '</option>');
+		}	
+		$(".no-data").hide();
+	}else{
+		$(".no-data").show();
+		return false;
+	}	
+	searchAbnormalUser(1); 
+	$("#reportSelect").change(function(){ 
+    	searchAbnormalUser(1);    	
+    });
+	$("#stateSelect").change(function(){ 
+		searchAbnormalUser(1);  
+		if($(this).val()=='2'){
+			$("#output_btn").show();
+			$("#send_tip_btn").hide();
+		}else{
+			$("#output_btn").hide();
+			$("#send_tip_btn").show();
+		}
+    });
+}
+/*******************************************************************************
+ * 功能：設置筛选条件健检项目,并初始化 
+ * params:examType 健檢项目列表（定义在message.js中)
+ ******************************************************************************/
+function setReportItem(examType) {
+	var reportId = $("#reportSelect").val();
+	$.ajax({
+		type : 'post',
+		url : getCheckItemList,
+		dataType : 'json',
+		cache : false,
+		async: false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"reportId" : reportId
+		},
+		success : function(data) {
+			if (data.result['status'] == "true") {
+				var items = data.result.itemList;
+				for (var i = 0; i < items.length; i++) {
+					var itemIndex = parseInt(items[i].type) - 100;
+					$(".report-item").append(
+							'<option value="' + examType[itemIndex][0] + '">' + examType[itemIndex][1]
+									+ '</option>');
+				}
+				$(".report-item").change(
+						function() {
+							var itemIndex = parseInt($(this).val()) - 100;
+							$(this).parent().siblings(".itemUnit").html(
+									'單位：' + examType[itemIndex][3]);
+							var html = '';
+							if(getUnitType(examType[itemIndex][0])){							
+								html+='<select class="form-control operator '+$(this).attr("condition")+'">';
+								html+='<option value="">條件</option>';					
+								html+='<option value="0">正常</option>';
+								html+='<option value="1">異常</option>';
+								html+='</select>';
+								$(this).parent().next().next().next().hide();
+								$(this).parent().next().next().hide();
+								$(this).parent().next().html(html);
+							}else{								
+								html+='<select class="form-control operator '+$(this).attr("condition")+'">';
+								html+=' <option value="">條件</option>';
+								html+=' <option value=">">></option>';
+								html+=' <option value=">=">≥</option>';
+								html+=' <option value="=">=</option>';
+								html+=' <option value="<=">≤</option>';
+								html+='<option value="<"><</option>';
+								html+='</select>';
+								$(this).parent().next().next().next().show();
+								$(this).parent().next().next().show();
+								$(this).parent().next().html(html);
+							}
+						});
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：判斷項目類型測量值是正常還是數字
+ * params:type 健檢项目列表（健檢項目預定義值)
+ ******************************************************************************/
+function getUnitType(type){
+	if(type==125 || type==126 || type==127 || type==116 || type==128 || type==117 || type==130 || type==131 || type==132 || type==133 || type==134 || type==135 || type==136){
+		return true;
+	}else{
+		return false
+	}
+}
+/*******************************************************************************
+ * 功能：構建篩選條件 
+ * params:
+ ******************************************************************************/
+var condition1 = [];
+var condition2 = [];
+var condition3 = [];
+function addCondition() {
+	if (condition1.length == 0) {
+		createContidion(condition1);
+	} else if (condition2.length == 0) {
+		createContidion(condition2);
+	} else if (condition3.length == 0) {
+		createContidion(condition3);
+	} else {
+		toastr["warning"]("最多只能添加三組條件");
+	}
+	$(".condition1").each(function() {
+		$(this).val('');
+	});
+	$(".condition2").each(function() {
+		$(this).val('');
+	});
+	$(".condition3").each(function() {
+		$(this).val('');
+	});
+	$(".itemUnit").each(function() {
+		$(this).html('單位：--');
+	});
+	$(".conditionpart").show();
+	searchAbnormalUser(1); 
+}
+/*******************************************************************************
+ * 功能：創建一組條件 
+ * params:
+ ******************************************************************************/
+function createContidion(conditionArry) {
+	var temp = [];
+	var condition = {};
+	$(".condition1").each(function() {
+		temp.push($(this).val());		
+	});
+	if (temp[0] != '' && temp[1] != '') {
+		if(temp[1]=='0'){
+			temp[1]="=";
+			temp[2]="正常";
+		}else if(temp[1]=='1'){
+			temp[1]="=";
+			temp[2]="異常";
+		}
+		condition = {
+			type : temp[0],
+			sign : temp[1],
+			value : temp[2]
+		}
+		conditionArry.push(condition);
+	}
+
+	temp = []
+	$(".condition2").each(function() {
+		temp.push($(this).val());
+	});
+	if (temp[0] != '' && temp[1] != '') {
+		if(temp[1]=='0'){
+			temp[1]="=";
+			temp[2]="正常";
+		}else if(temp[1]=='1'){
+			temp[1]="=";
+			temp[2]="異常";
+		}
+		condition = {
+			type : temp[0],
+			sign : temp[1],
+			value : temp[2]
+		}
+		conditionArry.push(condition);
+	}
+	temp = []
+	$(".condition3").each(function() {
+		temp.push($(this).val());
+	});
+	if (temp[0] != '' && temp[1] != '') {
+		if(temp[1]=='0'){
+			temp[1]="=";
+			temp[2]="正常";
+		}else if(temp[1]=='1'){
+			temp[1]="=";
+			temp[2]="異常";
+		}
+		condition = {
+			type : temp[0],
+			sign : temp[1],
+			value : temp[2]
+		}
+		conditionArry.push(condition);
+	}
+	showCondition();
+}
+/*******************************************************************************
+ * 功能：显示筛选条件 
+ * params:
+ ******************************************************************************/
+function showCondition() {
+	var html = '篩選條件：';
+	html = setCondition(html, condition1, 1);
+	html = setCondition(html, condition2, 2);
+	html = setCondition(html, condition3, 3);
+	$("#conditions").html((html.replace(")(", ") 或 (").replace(")(", ") 或 (")));
+}
+/*******************************************************************************
+ * 功能：设置筛选条件的html 
+ * params:html 要展示的筛选条件 conditionArry 筛选条件数组 index 第几组筛选条件
+ ******************************************************************************/
+function setCondition(html, conditionArry, index) {
+	if (conditionArry != 0) {
+		html += '( ';
+		for (var i = 0; i < conditionArry.length; i++) {
+			var itemIndex = parseInt(conditionArry[i].type - 100);
+			html += '<span class="tag label label-info">';
+			html += examType[itemIndex][1]
+			if (conditionArry[i].sign == '0') {
+				html += ' 正常'
+			} else if (conditionArry[i].sign == '1') {
+				html += ' 異常'
+			} else {
+				if(conditionArry[i].sign =='>='){
+					html += ' ≥';
+				}else if(conditionArry[i].sign =='<='){
+					html += ' ≤';
+				}else{
+					html += ' ' + conditionArry[i].sign
+				}				
+			}
+			html += ' ' + conditionArry[i].value;
+			if (i == conditionArry.length - 1) {
+				html += ' <i class="zmdi zmdi-close" onclick="delcondition('
+						+ index + ',' + i + ')"></i></span> '
+			} else {
+
+				html += ' <i class="zmdi zmdi-close" onclick="delcondition('
+						+ index + ',' + i + ')"></i></span> 同時 '
+			}
+		}
+		html += ' )';
+	}
+	return html;
+}
+/*******************************************************************************
+ * 功能：删除一个筛选条件 
+ * params:condition 第几组筛选条件 index 要删除条件的下标
+ ******************************************************************************/
+function delcondition(condition, index) {
+	if (condition == 1) {
+		condition1.splice(index, 1);
+	} else if (condition == 2) {
+		condition2.splice(index, 1);
+	} else if (condition == 3) {
+		condition3.splice(index, 1);
+	}
+	showCondition();
+	searchAbnormalUser(1); 
+}
+/*******************************************************************************
+ * 功能：搜尋異常員工 
+ * params:pageIndex 當前頁數索引
+ ******************************************************************************/
+function searchAbnormalUser(pageIndex) {
+	var reportId = $("#reportSelect").val();
+	var state = $("#stateSelect").val();
+	$("#loading_lock").fadeIn("fast","linear",function(){	
+		$.ajax({
+			type : 'post',
+			url : getScreenMemberList,
+			dataType : 'json',
+			cache : false,
+			data : {
+				"did" : doctorCom.doctorId,
+				"clubId":getClubId(),
+				"reportId" : reportId,
+				"condition1" : JSON.stringify(condition1),
+				"condition2" : JSON.stringify(condition2),
+				"condition3" : JSON.stringify(condition3),
+				"state" : state,
+				"pageIndex" : pageIndex,
+				"pageSize" : pageSize
+			},
+			success : function(data) {			
+				if (data.result['status'] == "true") {
+					screenMemberList = data.result;
+					setScreenMemberList(pageIndex);
+					$("#loading_lock").hide();
+				} else {
+					console.error("获取数据失败");					
+				}
+			},
+			error : function(errMsg) {
+				console.error("获取数据失败");
+			}
+		});
+	});
+}
+/*******************************************************************************
+ * 功能：設置異常員工列表數據 
+ * params:pageIndex 當前頁索引
+ ******************************************************************************/
+function setScreenMemberList(pageIndex) {
+	var html = '';
+	$("#screenMemberList").html('');
+	$("#listThead").html('');
+	var data = screenMemberList.memberList;
+	var item = [];// 異常項目 數組
+	var i = 0;
+	if (screenMemberList.total != '0') {
+		var temp = data[0].itemList;
+		for (i = 0; i < temp.length; i++) {
+			var itemIndex = parseInt(temp[i].type) - 100;
+			item.push(examType[itemIndex]);
+		}
+	}
+	html += '<tr>';
+	html += '<th style="width:15%">';
+	html += '<div class="checkbox checkbox-info checkbox-inline">';
+	html += '<input type="checkbox" id="checkboxAll" value="0">';
+	html += '<label for="checkboxAll" style="font-size:1.1rem;color:black;">姓名</label>';
+	html += '</div>';
+	if(item.length>0){html += '<br>&nbsp;';}html += '</th>';
+	html += '<th>性別';if(item.length>0){html += '<br>&nbsp;';}html += '</th>';
+	html += '<th class="fold">工號 / 部門 / 職稱';if(item.length>0){html += '<br>&nbsp;';}html += '</th>';
+	for (i = 0; i < item.length; i++) {
+		html += '<th>' + item[i][1] + '<br>' + item[i][3] + '&nbsp;</th>';
+	}
+	html += '<th>操作';if(item.length>0){html += '<br>&nbsp;';}html += '</th>';
+	html += '</tr>';
+	$("#listThead").html(html);
+	html = '';
+	for (i = 0; i < data.length; i++) {
+		html += '<tr>';
+		html+='<th scope="row">';
+		html+='<div class="checkbox checkbox-info" style="position:relative;">';
+		if(data[i].userId!=""){
+			html+='<input type="checkbox" value="'+data[i].cardId+'" data-userId="'+data[i].userId+'" name="checkedUser" id="checkbox'+i+'" >';
+		}else{
+			html+='<input type="checkbox" disabled value="'+data[i].cardId+'" name="checkedUser" id="checkbox'+i+'" >';
+		}
+		html+='<label for="checkbox'+i+'">'+ data[i].name +'</label>';
+		if(data[i].userId!=""){
+			html+='<a target="_blank" href="/doctorIndex/toUserIndex?userId='+data[i].userId+'&userName='+data[i].userName+'" class="text-info">'+data[i].userName+'</a>';
+		}
+		html+='   </div>';
+		html+='</th>';
+		html += '<td>' + data[i].gender + '</td>';
+		html += '<td class="fold">';
+		html += data[i].number + ' / ' + data[i].department + ' / '
+				+ data[i].position;
+		html += '	</td>';
+		var itemdata = data[i].itemList;// 用戶異常項目數據 數組
+		for (var j = 0; j < itemdata.length; j++) {
+			html += '<td>';
+			var valuearry = itemdata[j].value.split(",");
+			if (valuearry[1] != '' && valuearry[2] != '') {	
+				if(getUnitType(item[j][0])){
+					if (valuearry[1] != valuearry[0]) {
+						html += '<strong class="text-danger">' + valuearry[0]
+								+ '</strong><br>（' + valuearry[1] + '）';
+					} else {					
+						html += '<strong class="text-custom">' + valuearry[0]
+								+ '</strong><br>（' + valuearry[1] + '）';
+					}
+				}else{					
+					if (parseFloat(valuearry[1]) <= parseFloat(valuearry[0]) && parseFloat(valuearry[0]) <= parseFloat(valuearry[2])) {						
+						html += '<strong class="text-custom">' + valuearry[0]
+								+ '</strong><br>（' + valuearry[1] + ' - '
+								+ valuearry[2] + '' + item[j][3] + '）';
+					} else {								
+						html += '<strong class="text-danger">' + valuearry[0]
+								+ '</strong><br>（' + valuearry[1] + ' - '
+								+ valuearry[2] + '' + item[j][3] + '）';
+					}
+				}			
+			} else if (valuearry[1] == '' && valuearry[2] != '') {
+				if (parseFloat(valuearry[0]) < parseFloat(valuearry[2])) {
+					html += '<strong class="text-custom">' + valuearry[0]
+							+ '</strong><br>（<' + valuearry[2] + ''
+							+ item[j][3] + '）';
+				} else {
+					html += '<strong class="text-danger">' + valuearry[0]
+							+ '</strong><br>（<' + valuearry[2] + ''
+							+ item[j][3] + '）';
+				}
+			} else if (valuearry[1] != '' && valuearry[2] == '') {
+				if (parseFloat(valuearry[1]) < parseFloat(valuearry[0])) {
+					html += '<strong class="text-custom">' + valuearry[0]
+							+ '</strong><br>（>' + valuearry[1] + ''
+							+ item[j][3] + '）';
+				} else {
+					html += '<strong class="text-danger">' + valuearry[0]
+							+ '</strong><br>（>' + valuearry[1] + ''
+							+ item[j][3] + '）';
+				}
+			} else {
+				html += '<strong class="text-custom">' + valuearry[0]
+						+ '</strong><br>（-----）';
+			}
+
+			html += '</td>';
+		}
+		html += '<td>';
+		html += '<div class="btn-group">';
+		
+		if(data[i].userId!=""){
+			if (data[i].state == '1') {
+				html+='<button class="btn btn-default" type="button" onclick="showModal2('+ i +')" >提醒複檢</button>';
+			} else {
+				html += '<button class="btn btn-default" type="button" onclick="showModal3('+ i +')">已提醒</button>';
+			}			
+			html+='<button class="btn btn-default m-l-10" type="button" onclick="showCommendOne('+data[i].userId+')">推薦處方箋</button>';
+		}else{
+			html+='<button class="btn" type="button" onclick="showTipModal()">提醒複檢</button>&nbsp;&nbsp;';
+			html+='<button class="btn m-l-10" type="button" onclick="showTipModal()">推薦處方箋</button>';
+		}					
+		html += '</div>';
+		html += '</td>';
+		html += '</tr>';
+	}
+	$("#screenMemberList").html(html);
+	$("#recordCount").html(screenMemberList.total);
+	fillPageIndex(pageIndex);
+	$("#checkboxAll").bind("click",function(){		
+		if($(this).is(':checked')){
+			$("input[name='checkedUser']").not(':disabled').prop("checked",true);			
+		}else{
+			$("input[name='checkedUser']").not(':disabled').prop("checked",false);			
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：未关联用户弹出提醒 
+ * params: 
+ ******************************************************************************/
+function showTipModal(){
+	$("#tip-modal").modal('show');
+}
+/*******************************************************************************
+ * 功能：給單個用戶推薦處方箋 
+ * params: 
+ ******************************************************************************/
+function showCommendOne(uid){
+	$("#recommend_title").html('請選擇您想推薦給該用戶的處方箋');
+	getUserAvailablePres(uid);
+	$("#recommend_btn").attr("onclick",'recommendPres("'+uid+'","0")');
+	$("#pres_to_user").modal('show');
+}
+/*******************************************************************************
+ * 功能：批次給用戶推薦處方箋 
+ * params:
+ ******************************************************************************/
+function showCommendMany(){
+	var temp = [];
+	var num = $("input[name='checkedUser']:checked").length;
+	$("#recommend_title").html('已選擇<span class="text-custom">'+num+'</span>人');
+	if(num != 0){
+		getClubAvailablePres();
+		$("input[name='checkedUser']:checked").each(function(){
+			temp.push($(this).attr("data-userId"));
+		});		
+		$("#recommend_btn").attr("onclick",'recommendPres("'+temp.join(",")+'","1")');
+		$("#pres_to_user").modal('show');
+	}else{
+		toastr["warning"]("請至少選中一位用戶");
+	}	
+}
+/*******************************************************************************
+ * 功能：獲取可推薦給用戶的處方箋
+ * params: uid
+ ******************************************************************************/
+function getUserAvailablePres(uid){
+	$.ajax({
+		type : 'post',
+		url : getUserNeverUsePrescription,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"uid" : uid
+		},
+		success : function(data) {
+			if (data.status == "true") {
+				setAvailablePresList(data.datalist);								
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：獲取已發佈的處方箋
+ * params: uid
+ ******************************************************************************/
+function getClubAvailablePres(){
+	$.ajax({
+		type : 'post',
+		url : getPrescriptionList,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"type" : '0',
+			'pageIndex':1,
+			'pageSize':1000
+		},
+		success : function(data) {
+			if (data.status == "true") {
+				setAvailablePresList(data.datalist);								
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：設置可選擇的處方箋
+ * params: datalist
+ ******************************************************************************/
+function setAvailablePresList(datalist){
+	$('#user_available_pres').multiselect("destroy");
+	$("#user_available_pres").empty();
+	if(datalist.length!=0){			
+		for (var i = 0; i < datalist.length; i++) {
+			$("#user_available_pres").append(
+					'<option value="' + datalist[i].id + '">'
+							+ datalist[i].name + '</option>');
+		}	
+		$("#show_pres").show();
+	}else{
+		$("#user_available_pres").append('<option value="">暫無可推薦處方箋</option>');
+		$("#show_pres").hide();
+	}	
+	$('#user_available_pres').multiselect();
+}
+/*******************************************************************************
+ * 功能：查看處方箋
+ * params: uid
+ ******************************************************************************/
+function showPrescriptionDetail(){
+	var pid = $('#user_available_pres').val();
+	window.open("/doctor/prescriptionDetail?prescriptionId="+pid);
+}
+/*******************************************************************************
+ * 功能：推薦處方箋
+ * params: uids
+ * 		   flag 0：單人推薦，1：批次推薦
+ ******************************************************************************/
+function recommendPres(uids,flag){
+	var pid = $('#user_available_pres').val();
+	if(!pid){
+		toastr["warning"]("暫時沒有可推薦的處方箋");
+		return false;
+	}
+	$("#loading_lock").fadeIn("fast","linear",function(){	
+		$.ajax({
+			type : 'post',
+			url : givePrescriptionToUser,
+			dataType : 'json',
+			cache : false,
+			data : {
+				"did" : doctorCom.doctorId,
+				"clubId":getClubId(),
+				"userIds" : uids,
+				"prescriptionId": pid
+			},
+			success : function(data) {
+				if (data.status == "true") {
+					if(flag=='0'){		
+						$("#pres_to_user").modal('hide');
+						toastr["success"]("處方箋推薦成功");							
+					}else{
+						var successNum = parseInt(data.success);
+						var failNum = parseInt(data.fail);
+						if(failNum==0){
+							$("#tip_text").html('成功向<span class="text-custom">'+successNum+'</span>位已註冊會員之員工推薦處方箋');
+							$("#pres_to_user").modal('hide');
+							$("#tip_modal").modal('show');
+						}else{
+							$("#tip_text").html('成功向所選<span class="text-custom">'+(successNum+failNum)+'</span>位員工中的<span class="text-custom">'+successNum+'</span>人推薦處方箋，其餘<span class="text-custom">'+failNum+'</span>人已經是該處方箋使用者');
+							$("#pres_to_user").modal('hide');
+							$("#tip_modal").modal('show');
+						}
+					}	
+					$("#loading_lock").hide();
+				} else {
+					console.error("获取数据失败");
+					$("#loading_lock").hide();
+				}
+			}		
+		});
+	});
+}
+/*******************************************************************************
+ * 功能：填充列表分頁欄 
+ * params:
+ ******************************************************************************/
+function fillPageIndex(pageIndex) {
+	var pageCount = Math.floor((parseInt(screenMemberList.total) + pageSize - 1) / pageSize);		
+	if (pageCount > 0) {
+		var beginPageIndex = 1,endPageIndex = 5;
+		if (parseInt(pageCount) <= 5) {
+			beginPageIndex = 1;
+			endPageIndex = parseInt(pageCount);
+		} else {
+			beginPageIndex = parseInt(pageIndex) - 2;
+			endPageIndex = parseInt(pageIndex) + 2;
+			if (beginPageIndex < 1) {
+				beginPageIndex = 1;
+				endPageIndex = 5;
+			}
+			if (endPageIndex > parseInt(pageCount)) {
+				endPageIndex = parseInt(pageCount);
+				beginPageIndex = parseInt(pageCount) - 5 + 1;
+			}
+		}
+		$("#pageIndex").html('');
+		var html = '';
+		if (parseInt(pageIndex) <= 1) {
+			html += '<li class="disabled"><a href="javascript:void(0);"><i class="fa fa-angle-left"></i></a></li>';
+		} else {
+			html += '<li class=""> <a href="javascript:searchAbnormalUser('
+					+ (parseInt(pageIndex) - 1)
+					+ ');"><i class="fa fa-angle-left"></i></a></li>';
+		}
+		for (var i = beginPageIndex; i <= endPageIndex; i++) {
+			if (i == pageIndex) {
+				html += '<li class="active"><a href="javascript:searchAbnormalUser('
+						+ i + ');">' + i + '</a></li>';
+			} else {
+				html += '<li class=""><a href="javascript:searchAbnormalUser('
+						+ i + ');">' + i + '</a></li>';
+			}
+		}
+		if (parseInt(pageIndex) >= pageCount) {
+			html += '<li class="disabled"> <a href="javascript:void(0);"><i class="fa fa-angle-right"></i></a> </li>';
+		} else {
+			html += '<li class=""> <a href="javascript:searchAbnormalUser('
+					+ (parseInt(pageIndex) + 1)
+					+ ');"><i class="fa fa-angle-right"></i></a> </li>';
+		}
+		$("#pageIndex").append(html);
+		$("#gopage").val(pageIndex);
+		$("#gopage").attr("max",pageCount);
+	} else {
+		$("#pageIndex").html('');
+		$("#gopage").val(pageIndex);
+		$("#gopage").attr("max",pageCount);
+	}
+}
+
+/*******************************************************************************
+ * 功能：弹出已提醒的窗口 
+ * params:index 員工在數組中的下標
+ ******************************************************************************/
+function showModal3(index) {
+	var data = screenMemberList.memberList;
+	$(".abitemList").html('');
+	//$("#modal3-textarea").val('');
+	getMemberAbnItemListData(data[index].cardId);
+	getRecheckAdviseListData(data[index].cardId);
+	$("#modal3-username").html(data[index].name);
+	$("#modal4-username").html(data[index].name);
+	$("#modal4-send").attr(
+			"onclick",
+			'sendAdvice("' + data[index].cardId + '","modal4-textarea",'
+					+ data[index].state + ')');
+	$("#give-advise-modal3").attr('index', index);	
+	$("#give-advise-modal3").modal('show');
+}
+/*******************************************************************************
+ * 功能：弹出提醒複檢的窗口 
+ * params: index 員工在數組中的下標
+ ******************************************************************************/
+function showModal2(index) {
+	var data = screenMemberList.memberList;
+	$(".abitemList").html('');
+	$("#modal2-textarea").val('');
+	getMemberAbnItemListData(data[index].cardId);
+	$("#modal2-username").html(data[index].name);
+	$("#modal2-send").attr(
+			"onclick",
+			'sendAdvice("' + data[index].cardId + '","modal2-textarea",'
+					+ data[index].state + ')');
+	$("#give-advise-modal2").attr('index', index);	
+	$("#give-advise-modal2").modal('show');
+}
+/*******************************************************************************
+ * 功能：彈出提醒選中用戶的窗口 
+ * params:checkedUser
+ ******************************************************************************/
+function adviceAll(){
+	var temp = [];
+	var num = $("input[name='checkedUser']:checked").length;
+	$("#modal1-username").html(num);
+	if(num != 0){
+		$("input[name='checkedUser']:checked").each(function(){
+			temp.push($(this).val());
+		});		
+		$("#modal1-send").attr(
+				"onclick",
+				'sendAdvice("'+temp.join(",")+'","modal1-textarea","0")');
+		$("#give-advise-modal1").modal('show');
+	}else{
+		toastr["warning"]("請至少選中一位用戶");
+	}	
+	ga('send','event','異常員工篩選','buttonPress','異常員工提醒選中',1);
+}
+/*******************************************************************************
+ * 功能：獲取員工異常項目列表 
+ * params:cardId 員工身分證字號
+ ******************************************************************************/
+function getMemberAbnItemListData(cardId) {
+	var reportId = $("#reportSelect").val();
+	$.ajax({
+		type : 'post',
+		url : getMemberAbnItemList,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"reportId" : reportId,
+			"cardId" : cardId
+		},
+		success : function(data) {
+			if (data.result['status'] == "true") {
+				setMemberAbnItemList(data.result.itemList);
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：獲取員工複檢提醒的歷史紀錄，并顯示最新一條 
+ * params:cardId 員工身分證字號
+ ******************************************************************************/
+function getRecheckAdviseListData(cardId) {
+	var reportId = $("#reportSelect").val();
+	$.ajax({
+		type : 'post',
+		url : getRecheckAdviseList,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"reportId" : reportId,
+			"cardId" : cardId,
+			"timestamp":new Date().getTime()
+		},
+		success : function(data) {
+			if (data.result['status'] == "true") {
+				$("#modal3-textarea").html(data.result.adviseList[0].advise);
+				$("#lastAdviceTime").html(
+						formatDate(parseInt(data.result.adviseList[0].time),
+								"yyyy年MM月dd日 HH:mm"));
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+		}
+	});
+}
+
+/* var MemberAbnItemList = { status:"true", itemList:[ { type:"100",
+  value:"230,1,100", unit:"单位" },{ type:"101", value:"134,,123", unit:"单位" },{
+  type:"102", value:"34,55,", unit:"单位" }, ] }*/
+
+/*******************************************************************************
+ * 功能：设置員工异常项目弹窗展示 
+ * params:data 异常项目数据
+ *        fillid 需要填充數據的位置id
+ ******************************************************************************/
+function setMemberAbnItemList(data) {
+	var html = '';
+	if (data.length != 0) {
+		for (var i = 0; i < data.length; i++) {
+			var itemIndex = parseInt(data[i].type) - 100;
+			var valuearry = data[i].value.split(",");
+			var dot = dotNum(valuearry[0]);
+			html += '<tr>';
+			html += '<td>' + examType[itemIndex][1] + '</td>';
+			/*console.log(valuearry[0]+" "+valuearry[1]+" "+valuearry[2]);
+			console.log(dotNum(valuearry[0])+" "+dotNum(valuearry[1])+" "+dotNum(valuearry[2]));*/
+            if(itemIndex=="52"||itemIndex=="53"||itemIndex=="54"){
+                html += '<td>'
+                    + parseFloat(valuearry[0]).toFixed(dot)+'</td>';
+			}else {
+                if (valuearry[1] != '' && valuearry[2] != '') {
+                    if(valuearry[1] == valuearry[2]){
+                        html += '<td>'
+                            + valuearry[0]
+                            + '<span class="text-danger" style="font-size:14px">&nbsp;&nbsp;'
+                            + valuearry[0] + '</span></td>';
+                    }else{
+                        if (parseFloat(valuearry[1]) > parseFloat(valuearry[0])) {
+                            html += '<td>'
+                                + parseFloat(valuearry[0]).toFixed(dot)
+                                + '<span class="text-danger" style="font-size:14px">&nbsp;<i class="fa fa-arrow-down"></i>&nbsp;'
+                                + (valuearry[1] - valuearry[0]).toFixed(dot) + '</span></td>';
+                        } else if (parseFloat(valuearry[0]) > parseFloat(valuearry[2])) {
+                            html += '<td>'
+                                + parseFloat(valuearry[0]).toFixed(dot)
+                                + '<span class="text-danger" style="font-size:14px">&nbsp;<i class="fa fa-arrow-up"></i>&nbsp;'
+                                + (valuearry[0] - valuearry[2]).toFixed(dot) + '</span></td>';
+
+                        } else {
+                            html += '<td>' + parseFloat(valuearry[0]).toFixed(dot) + '</td>'
+                        }
+                    }
+                    if(valuearry[1] == valuearry[2]){
+                        html += '<td>'+valuearry[1]+'</td>';
+                    }else{
+                        html += '<td>' + valuearry[1] + '-' + valuearry[2] + ''
+                            + examType[itemIndex][3] + '</td>';
+                    }
+                } else if (valuearry[1] == '' && valuearry[2] != '') {
+                    if (parseFloat(valuearry[0]) > parseFloat(valuearry[2])) {
+                        html += '<td>'
+                            + parseFloat(valuearry[0]).toFixed(dot)
+                            + '<span class="text-danger" style="font-size:14px">&nbsp;<i class="fa fa-arrow-up"></i>&nbsp;'
+                            + (valuearry[0] - valuearry[2]).toFixed(dot) + '</span></td>';
+                    } else {
+                        html += '<td>' + parseFloat(valuearry[0]).toFixed(dot) + '</td>'
+                    }
+                    html += '<td><' + valuearry[2] + '' + examType[itemIndex][3]
+                        + '</td>';
+                } else if (valuearry[1] != '' && valuearry[2] == '') {
+                    if (parseFloat(valuearry[1]) > parseFloat(valuearry[0])) {
+                        html += '<td>'
+                            + parseFloat(valuearry[0]).toFixed(dot)
+                            + '<span class="text-danger" style="font-size:14px">&nbsp;<i class="fa fa-arrow-down"></i>&nbsp;'
+                            + (valuearry[1] - valuearry[0]).toFixed(dot) + '</span></td>';
+                    } else {
+                        html += '<td>' + parseFloat(valuearry[0]).toFixed(dot) + '</td>'
+                    }
+                    html += '<td>>' + valuearry[1] + '' + examType[itemIndex][3]
+                        + '</td>';
+                } else {
+                    html += '<strong class="text-custom">' + valuearry[0]
+                        + '</strong><br>（-----）';
+                }
+			}
+
+			html += '</tr>';
+		}
+		$(".abitemList").html(html);
+	} else {
+		toastr["warning"]("該員工沒有異常項目");
+		$(".abitemList").html('');
+	}
+}
+/*******************************************************************************
+ * 功能：判断是几位小数 
+ * params: num 数字	  
+ ******************************************************************************/
+function dotNum(num){
+	if(num && num.toString().indexOf(".")>-1){
+		return num.toString().split(".")[1].length;
+	}else{
+		return 0;
+	}
+}
+/*******************************************************************************
+ * 功能：给員工給出建议提醒 
+ * params:cardId 员工ID 
+ * 		  textareaId 输入建议的文本域Id
+ ******************************************************************************/
+function sendAdvice(cardId, textareaId, state) {
+	var advise = $("#" + textareaId).val().trim();
+	var reportId = $("#reportSelect").val();
+	if(advise==''){
+		toastr["warning"]("未填寫提醒內容");
+		return;
+	}
+	$.ajax({
+		type : 'post',
+		url : giveRecheckAdvise,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"reportId" : reportId,
+			"state" : state,
+			"cardId" : cardId,
+			"advise" : advise
+		},
+		success : function(data) {
+			if (data.result['status'] == "true") {
+				var resultList= data.result.resultList;
+				if(resultList.length == 0){
+					toastr["success"]("發送成功");
+				}else if(resultList.length == 1 && textareaId != 'modal1-textarea'){					
+					toastr["warning"]("該用戶還未註冊全家寶帳號，無法接收提醒訊息");
+				}else{
+					toastr["warning"](resultList.length+"個用戶還未註冊全家寶帳號，無法接收提醒訊息");
+				}							
+				$("#give-advise-modal1").modal('hide');
+				$("#give-advise-modal2").modal('hide');
+				$("#give-advise-modal3").modal('hide');
+				$("#custom-width-modal4").modal('hide');
+				$("#" + textareaId).val('');
+				var pageIndex = $("#gopage").val();				
+				searchAbnormalUser(parseInt(pageIndex));
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+			toastr["error"]("發送失敗");
+			$("#give-advise-modal1").modal('hide');
+			$("#give-advise-modal2").modal('hide');
+			$("#give-advise-modal3").modal('hide');
+			$("#custom-width-modal4").modal('hide');
+		}
+	});
+	ga('send','event','異常員工篩選','buttonPress','異常員工提醒複檢',1);
+}
+/*******************************************************************************
+ * 功能：員工篩選列表中的提醒所有
+ * params:textareaId 输入建议的文本域Id
+ ******************************************************************************/
+function giveAllAdvise(textareaId) {
+	var reportId = $("#reportSelect").val();
+	var advise = $("#" + textareaId).val();
+	if(advise==''){
+		toastr["warning"]("未填寫提醒內容");
+		return;
+	}
+	$.ajax({
+		type : 'post',
+		url : giveAllRecheckAdvise,
+		dataType : 'json',
+		cache : false,
+		data : {
+			"did" : doctorCom.doctorId,
+			"clubId":getClubId(),
+			"reportId" : reportId,
+			"condition1" : JSON.stringify(condition1),
+			"condition2" : JSON.stringify(condition2),
+			"condition3" : JSON.stringify(condition3),
+			"advise" : advise			
+		},
+		success : function(data) {
+			if (data.result['status'] == "true") {
+				var resultList= data.result.resultList;
+				if(resultList.length == 0){
+					toastr["success"]("發送成功");
+				}else if(resultList.length == 1 && textareaId != 'modal1-textarea'){					
+					toastr["warning"]("該用戶還未註冊全家寶帳號，無法接收提醒訊息");
+				}else{
+					toastr["warning"](resultList.length+"個用戶還未註冊全家寶帳號，無法接收提醒訊息");
+				}		
+				$("#give-advise-modal1").modal('hide');	
+				$("#" + textareaId).val('');
+			} else {
+				console.error("获取数据失败");
+			}
+		},
+		error : function(errMsg) {
+			console.error("获取数据失败");
+			toastr["error"]("發送失敗");
+			$("#give-advise-modal1").modal('hide');
+		}
+	});
+}
+/*******************************************************************************
+ * 功能：查看員工報告詳情
+ * params:index 員工索引
+ ******************************************************************************/
+function showDetail(index){
+	var data = screenMemberList.memberList;
+	var reportId = $("#reportSelect").val();
+	window.location.href = '/personDetail?reportId='+reportId+'&cardId='+data[index].cardId
+}
+/**********************************
+ * 功能：跳轉到某一頁
+ * params:		 
+ *********************************/
+function goPage(){
+	var pageIndex = $("#gopage").val();
+	var pageCount = Math.floor((parseInt(screenMemberList.total) + pageSize - 1) / pageSize);		
+	if(0<parseInt(pageIndex) && parseInt(pageIndex) <= pageCount){
+		searchAbnormalUser(parseInt(pageIndex));
+	}else{
+		toastr["warning"]("超出頁數範圍");
+	}		
+}
+/*******************************************************************************
+ * 功能：彈出匯出提醒的窗口 
+ * params:
+ ******************************************************************************/
+function showOutputTip(){
+	$("#output_num").html(screenMemberList.total);
+	if(parseInt(screenMemberList.total)>0){
+		$("#output-modal").modal();
+	}else{
+		$("#no_user_output").modal();
+	}	
+}
+/*******************************************************************************
+ * 功能：创建筛选条件文本 
+ * params:
+ ******************************************************************************/
+function createConditionText() {
+	var str = '篩選條件：';
+	str = creareOneConditionText(str, condition1);
+	str = creareOneConditionText(str, condition2);
+	str = creareOneConditionText(str, condition3);
+	return str.replace(")(", ") 或 (").replace(")(", ") 或 (");
+}
+/*******************************************************************************
+ * 功能：创建一组条件的文本
+ * params:str 要展示的筛选条件 conditionArry 筛选条件数组 
+ ******************************************************************************/
+function creareOneConditionText(str, conditionArry) {
+	if (conditionArry != 0) {
+		str += '( ';
+		for (var i = 0; i < conditionArry.length; i++) {
+			var itemIndex = parseInt(conditionArry[i].type - 100);		
+			str += examType[itemIndex][1]
+			if (conditionArry[i].sign == '0') {
+				str += ' 正常'
+			} else if (conditionArry[i].sign == '1') {
+				str += ' 異常'
+			} else {
+				if(conditionArry[i].sign =='>='){
+					str += ' ≥';
+				}else if(conditionArry[i].sign =='<='){
+					str += ' ≤';
+				}else{
+					str += ' ' + conditionArry[i].sign
+				}				
+			}
+			str += ' ' + conditionArry[i].value;
+			if (i != conditionArry.length - 1) {
+				str += ' 同時 '
+			}
+		}
+		str += ' )';
+	}
+	return str;
+}
+/*******************************************************************************
+ * 功能：匯出員工篩查列表
+ * params:
+ ******************************************************************************/
+function outputScreenMemberListData() {	
+	$("#loading_lock").fadeIn("fast","linear",function(){	
+		var reportId = $("#reportSelect").val();
+		var state = $("#stateSelect").val();
+		$.ajax({
+			type : 'post',
+			url : outputScreenMemberList,
+			dataType : 'json',
+			cache : false,
+			data : {
+				"did" : doctorCom.doctorId,
+				"clubId":getClubId(),
+				"reportId" : reportId,
+				"condition1" : JSON.stringify(condition1),
+				"condition2" : JSON.stringify(condition2),
+				"condition3" : JSON.stringify(condition3),
+				"state" : state,	
+				"conditionText":createConditionText()
+			},
+			success : function(data) {			
+				if(data.status=="true"){
+	        	  window.location.href = 'http://'+data.downloadUrl; 	        	       	
+	        	  $("#loading_lock").hide();
+	        	  $("#output-modal").modal('hide');
+	           }else{
+	           	console.error(data.message);
+	           }
+			},
+			error : function(errMsg) {
+				console.error("获取数据失败");
+			}
+		});
+	});
+}
+//獲取快捷回覆列表
+//type: 1提醒選中，2複檢提醒，4已提醒
+function getFastReplyList(ul, type){
+	$.ajax({
+		type:'post',
+		url:'/doctor/getFastReplyList',
+		async:false,
+		data:{
+			did:$('.user-box img').attr('uid'),
+			clubId:getClubId()
+		},
+		dataType:'json',
+		success:function(data){
+			if(data.status=='true'){
+				//每次刷新列表時先清空
+				var fastReplyArr = [];
+				ul.find('li:not(.fastMenuSetting)').remove();
+				$.each(data.datalist.reverse(), function(i,v){
+					var $obj = $('<li><a href="javascript:void(0)"></a></li>');
+					$obj.find('a').attr('title', v.replyDetail);
+					$obj.find('a').text((+i+1)+'.'+getCutString(v.replyDetail, 30));
+					$obj.find('a').bind('click', function(){
+						//醫生提交快捷回覆信息
+						switch(+type){
+							case 1:
+								var temp = [];
+								$("input[name='checkedUser']:checked").each(function(){
+									temp.push($(this).val());
+								});		
+								$('#modal1-textarea').val(v.replyDetail);
+								sendAdvice(temp.join(","), "modal1-textarea", "0");
+								break;
+							case 2:
+								var data = screenMemberList.memberList;
+								var index = $("#give-advise-modal2").attr('index');
+								$('#modal2-textarea').val(v.replyDetail);
+								sendAdvice(data[index].cardId, "modal2-textarea", data[index].state);
+								break;
+							case 4:
+								data = screenMemberList.memberList;
+								index = $("#give-advise-modal3").attr('index');
+								$('#modal4-textarea').val(v.replyDetail);
+								sendAdvice(data[index].cardId, "modal4-textarea", data[index].state);
+								break;
+							default:
+								break;
+						}
+					});
+					$obj.insertBefore(ul.find('.fastMenuSetting'));
+					fastReplyArr.push({'replyId':v.replyId, 'replyDetail':v.replyDetail});
+				});
+			}
+		}
+	});
+}
+/**********************************
+ * 功能：截取指定长度字符串
+ * params:str 原字符串
+ * 		  length 要截取的长度
+ *********************************/
+function strLong2short(str,length){
+	if(str.length > length){
+		return '<span title="'+str+'">'+str.substring(0,length)+'...</span>';
+	}else{
+		return str;
+	}
+}
+/*******************************************************************************
+ * 功能：页面初始化判断是否打开聊天框 
+ * params:
+ ******************************************************************************/
+function openChatWin() {
+	if (getCookie('chatwin') == 'show') {
+		$("#userdatalistPanel").addClass("col-lg-8").removeClass("col-lg-12");
+		$('#m-msg').removeClass('hidden');
+	}
+	clearChatMsg();
+	// 儲存在cookie中的會話信息先後插入聊天會話框
+	var chatUid1 = getCookie('chat-uid1');
+	var chatName1 = getCookie('chat-name1');
+	var chatUid0 = getCookie('chat-uid0');
+	var chatName0 = getCookie('chat-name0');
+	if (chatUid1 != null) {
+		insertUserDialog(chatUid1, chatName1);
+	}
+	if (chatUid0 != null) {
+		insertUserDialog(chatUid0, chatName0);
+	}
+}
