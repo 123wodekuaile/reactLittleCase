@@ -495,6 +495,65 @@ module.exports = emptyObject;
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if (typeof module !== 'undefined' && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
+			return classNames;
+		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {
+		window.classNames = classNames;
+	}
+}());
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
 "use strict";
 /* WEBPACK VAR INJECTION */(function(process) {/**
  * Copyright (c) 2014-present, Facebook, Inc.
@@ -561,7 +620,7 @@ module.exports = warning;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -660,7 +719,7 @@ module.exports = checkPropTypes;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -699,7 +758,7 @@ var ExecutionEnvironment = {
 module.exports = ExecutionEnvironment;
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -741,7 +800,7 @@ function getActiveElement(doc) /*?DOMElement*/{
 module.exports = getActiveElement;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -812,7 +871,7 @@ function shallowEqual(objA, objB) {
 module.exports = shallowEqual;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -855,120 +914,6 @@ function containsNode(outerNode, innerNode) {
 module.exports = containsNode;
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-07-13 11:41:11
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-07-27 15:49:27
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-// import React from "react"
-// export default class Son extends React.Component{
-// 	constructor(props){
-// 		super(props);
-
-// 	}
-
-// 	render(){
-// 		return <div>
-// 			<p>哈哈哈，这是父亲给我的{this.props.txt}元钱</p>
-// 			<button onClick={()=>{this.props.show()}}>点我</button>
-
-// 		</div>
-// 	}
-
-// }
-
-
-var Son = function (_React$Component) {
-	_inherits(Son, _React$Component);
-
-	function Son(props) {
-		_classCallCheck(this, Son);
-
-		var _this = _possibleConstructorReturn(this, (Son.__proto__ || Object.getPrototypeOf(Son)).call(this, props));
-
-		_this.state = {
-			"myFather": _this.props.txt
-		};
-		return _this;
-	}
-
-	_createClass(Son, [{
-		key: "showJiuJiu",
-		value: function showJiuJiu() {
-			var result = [];
-			for (var i = 0; i < 9; i++) {
-				var temp = [];
-				for (var j = 1; j < 9; j++) {
-					if (i < j) {
-						temp.push(_react2.default.createElement(
-							"td",
-							{ key: j },
-							i,
-							"*",
-							j,
-							" = ",
-							i * j
-						));
-					} else {
-						temp.push(_react2.default.createElement("td", null));
-					}
-				}
-			}
-			result.push(_react2.default.createElement(
-				"tr",
-				null,
-				temp
-			));
-			return result;
-		}
-	}, {
-		key: "render",
-		value: function render() {
-			return _react2.default.createElement(
-				"div",
-				null,
-				_react2.default.createElement(
-					"table",
-					null,
-					_react2.default.createElement(
-						"tbody",
-						null,
-						this.showJiuJiu()
-					)
-				)
-			);
-		}
-	}]);
-
-	return Son;
-}(_react2.default.Component);
-
-exports.default = Son;
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -983,31 +928,18 @@ var _reactDom = __webpack_require__(17);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Clean = __webpack_require__(26);
+var _Canlendar = __webpack_require__(26);
 
-var _Clean2 = _interopRequireDefault(_Clean);
-
-var _Shopping = __webpack_require__(28);
-
-var _Shopping2 = _interopRequireDefault(_Shopping);
-
-var _MonthView = __webpack_require__(29);
-
-var _MonthView2 = _interopRequireDefault(_MonthView);
-
-var _CopyFather = __webpack_require__(30);
-
-var _CopyFather2 = _interopRequireDefault(_CopyFather);
+var _Canlendar2 = _interopRequireDefault(_Canlendar);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
-* @Author: 21746209
-* @Date:   2018-07-07 16:47:51
-* @Last Modified by:   21746209
-* @Last Modified time: 2018-08-19 16:15:05
-*/
-_reactDom2.default.render(_react2.default.createElement(_CopyFather2.default, { year: "2018", month: "8" }), document.getElementById("app-container"));
+_reactDom2.default.render(_react2.default.createElement(_Canlendar2.default, null), document.getElementById("app-container")); /*
+                                                                                                                               * @Author: 21746209
+                                                                                                                               * @Date:   2018-07-07 16:47:51
+                                                                                                                               * @Last Modified by:   21746209
+                                                                                                                               * @Last Modified time: 2018-08-22 20:53:18
+                                                                                                                               */
 
 /***/ }),
 /* 14 */
@@ -1063,9 +995,9 @@ if (process.env.NODE_ENV !== "production") {
 var _assign = __webpack_require__(3);
 var invariant = __webpack_require__(4);
 var emptyObject = __webpack_require__(5);
-var warning = __webpack_require__(6);
+var warning = __webpack_require__(7);
 var emptyFunction = __webpack_require__(2);
-var checkPropTypes = __webpack_require__(7);
+var checkPropTypes = __webpack_require__(8);
 
 // TODO: this is special because it gets imported during build.
 
@@ -2614,7 +2546,7 @@ if (process.env.NODE_ENV === 'production') {
 /*
  Modernizr 3.0.0pre (Custom Build) | MIT
 */
-var aa=__webpack_require__(4),ba=__webpack_require__(0),m=__webpack_require__(8),p=__webpack_require__(3),v=__webpack_require__(2),da=__webpack_require__(9),ea=__webpack_require__(10),fa=__webpack_require__(11),ha=__webpack_require__(5);
+var aa=__webpack_require__(4),ba=__webpack_require__(0),m=__webpack_require__(9),p=__webpack_require__(3),v=__webpack_require__(2),da=__webpack_require__(10),ea=__webpack_require__(11),fa=__webpack_require__(12),ha=__webpack_require__(5);
 function A(a){for(var b=arguments.length-1,c="https://reactjs.org/docs/error-decoder.html?invariant="+a,d=0;d<b;d++)c+="&args[]="+encodeURIComponent(arguments[d+1]);aa(!1,"Minified React error #"+a+"; visit %s for the full message or use the non-minified dev environment for full errors and additional helpful warnings. ",c)}ba?void 0:A("227");
 function ia(a,b,c,d,e,f,g,h,k){this._hasCaughtError=!1;this._caughtError=null;var n=Array.prototype.slice.call(arguments,3);try{b.apply(c,n)}catch(r){this._caughtError=r,this._hasCaughtError=!0}}
 var B={_caughtError:null,_hasCaughtError:!1,_rethrowError:null,_hasRethrowError:!1,invokeGuardedCallback:function(a,b,c,d,e,f,g,h,k){ia.apply(B,arguments)},invokeGuardedCallbackAndCatchFirstError:function(a,b,c,d,e,f,g,h,k){B.invokeGuardedCallback.apply(this,arguments);if(B.hasCaughtError()){var n=B.clearCaughtError();B._hasRethrowError||(B._hasRethrowError=!0,B._rethrowError=n)}},rethrowCaughtError:function(){return ka.apply(B,arguments)},hasCaughtError:function(){return B._hasCaughtError},clearCaughtError:function(){if(B._hasCaughtError){var a=
@@ -2924,14 +2856,14 @@ if (process.env.NODE_ENV !== "production") {
 
 var invariant = __webpack_require__(4);
 var React = __webpack_require__(0);
-var warning = __webpack_require__(6);
-var ExecutionEnvironment = __webpack_require__(8);
+var warning = __webpack_require__(7);
+var ExecutionEnvironment = __webpack_require__(9);
 var _assign = __webpack_require__(3);
 var emptyFunction = __webpack_require__(2);
-var checkPropTypes = __webpack_require__(7);
-var getActiveElement = __webpack_require__(9);
-var shallowEqual = __webpack_require__(10);
-var containsNode = __webpack_require__(11);
+var checkPropTypes = __webpack_require__(8);
+var getActiveElement = __webpack_require__(10);
+var shallowEqual = __webpack_require__(11);
+var containsNode = __webpack_require__(12);
 var emptyObject = __webpack_require__(5);
 var hyphenateStyleName = __webpack_require__(22);
 var camelizeStyleName = __webpack_require__(24);
@@ -20511,13 +20443,25 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _classnames = __webpack_require__(27);
+var _YearView = __webpack_require__(27);
 
-var _classnames2 = _interopRequireDefault(_classnames);
+var _YearView2 = _interopRequireDefault(_YearView);
 
-var _Son = __webpack_require__(12);
+var _MonthView = __webpack_require__(28);
 
-var _Son2 = _interopRequireDefault(_Son);
+var _MonthView2 = _interopRequireDefault(_MonthView);
+
+var _DayView = __webpack_require__(29);
+
+var _DayView2 = _interopRequireDefault(_DayView);
+
+var _MonthPicker = __webpack_require__(30);
+
+var _MonthPicker2 = _interopRequireDefault(_MonthPicker);
+
+var _YearPicker = __webpack_require__(31);
+
+var _YearPicker2 = _interopRequireDefault(_YearPicker);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20527,292 +20471,229 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-07-08 13:13:34
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:34:43
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-07 16:33:40
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-28 12:39:42
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-// export default class Clean extends React.Component{
-// 	constructor(props){
-// 		super(props);
-// 	}
-// 	render(){
-// 		return <h1>这是一个类组件</h1>
-// 	}
-// }
-var Clean = function (_React$Component) {
-	_inherits(Clean, _React$Component);
+var Canlender = function (_React$Component) {
+	_inherits(Canlender, _React$Component);
 
-	function Clean(props) {
-		_classCallCheck(this, Clean);
+	function Canlender(props) {
+		_classCallCheck(this, Canlender);
 
-		var _this = _possibleConstructorReturn(this, (Clean.__proto__ || Object.getPrototypeOf(Clean)).call(this, props));
+		var _this = _possibleConstructorReturn(this, (Canlender.__proto__ || Object.getPrototypeOf(Canlender)).call(this, props));
 
 		_this.state = {
-			"a": 30,
-			"w": 600,
-			"h": 300,
-			"show": true,
-			"text": true,
-			"zhe": true,
-			"shi": true,
-			"lei": false,
-			"students": [{ "name": "Tom", "point": 65 }, { "name": "Jerry", "point": 85 }, { "name": "Nick", "point": 99 }],
-			"value": 15
+			year: 2018,
+			month: 12,
+			view: "year"
 		};
 		return _this;
 	}
 
-	_createClass(Clean, [{
-		key: "show",
-		value: function show() {
-			this.setState({
-				"a": this.state.a + 1
-			});
+	_createClass(Canlender, [{
+		key: "setYear",
+		value: function setYear(year) {
+			this.setState({ year: year });
 		}
 	}, {
-		key: "control",
-		value: function control() {
-			this.setState({
-				"show": !this.state.show,
-				"text": !this.state.text
-			});
+		key: "setMonth",
+		value: function setMonth(month) {
+			this.setState({ month: month });
 		}
 	}, {
-		key: "changeTet",
-		value: function changeTet() {
-			if (this.state.text) {
-				return _react2.default.createElement(
-					"span",
-					null,
-					"\u663E\u793A"
-				);
-			} else {
-				return _react2.default.createElement(
-					"span",
-					null,
-					"\u9690\u85CF"
-				);
+		key: "setView",
+		value: function setView(view) {
+			this.setState({ view: view });
+		}
+	}, {
+		key: "showView",
+		value: function showView() {
+			switch (this.state.view) {
+				case "year":
+					return _react2.default.createElement(_YearView2.default, { year: this.state.year,
+						month: this.state.month,
+						setYear: this.setYear.bind(this),
+						setView: this.setView.bind(this) });
+
+				case "month":
+					return _react2.default.createElement(_MonthView2.default, {
+						year: this.state.year,
+						month: this.state.month,
+						setMonth: this.setMonth.bind(this),
+						setView: this.setView.bind(this) });
+
+				case "day":
+					return _react2.default.createElement(_DayView2.default, { year: this.state.year,
+						month: this.state.month,
+						setYear: this.setYear.bind(this),
+						setView: this.setView.bind(this) });
 			}
 		}
 	}, {
-		key: "changeInp",
-		value: function changeInp() {
-			this.setState({
-				"inp": this.refs.the.value
-			});
-		}
-	}, {
-		key: "changeHandeler",
-		value: function changeHandeler(value) {
-			this.setState({
-				"value": value
-			});
+		key: "showPicker",
+		value: function showPicker() {
+			switch (this.state.view) {
+				case "year":
+					return _react2.default.createElement(_YearPicker2.default, {
+						year: this.state.year,
+						month: this.state.month,
+						setYear: this.setYear.bind(this),
+						setView: this.setView.bind(this) });
+
+				case "day":
+					return _react2.default.createElement(_MonthPicker2.default, {
+						year: this.state.year,
+						month: this.state.month,
+						setYear: this.setYear.bind(this),
+						setView: this.setView.bind(this),
+						setMonth: this.setMonth.bind(this) });
+			}
 		}
 	}, {
 		key: "render",
 		value: function render() {
-			var _this2 = this;
-
 			return _react2.default.createElement(
 				"div",
 				null,
-				_react2.default.createElement("input", { type: "range", min: "0", max: "255", value: this.state.a, onChange: function onChange(event) {
-						_this2.rangeChangeHandeler(event.target.value);
-					} }),
-				_react2.default.createElement(
-					"p",
-					null,
-					this.state.a
-				),
-				_react2.default.createElement("input", { type: "text", ref: "the", on: this.changeInp.bind(this) }),
-				_react2.default.createElement(
-					"p",
-					null,
-					this.state.inp
-				),
-				_react2.default.createElement(
-					"button",
-					{ onClick: this.show.bind(this) },
-					"\u70B9\u6211+1"
-				),
-				"\xA0\xA0",
-				_react2.default.createElement(
-					"button",
-					{ onClick: this.control.bind(this) },
-					this.changeTet()
-				),
-				this.state.show ? _react2.default.createElement("div", { className: "box", style: { "width": this.state.w + "px", "height": this.state.h + "px" } }) : null,
-				_react2.default.createElement(
-					"ul",
-					null,
-					this.state.students.map(function (item, index) {
-						return _react2.default.createElement(
-							"li",
-							{ key: index },
-							item.name
-						);
-					})
-				),
-				_react2.default.createElement(
-					"p",
-					{ className: (0, _classnames2.default)({
-							"zhe": this.state.zhe,
-							"shi": this.state.shi,
-							"lei": this.state.lei
-						}) },
-					"\u4F1A\u6709\u4EC0\u4E48\u7C7B\u6DFB\u52A0\u8FDB\u6765\uFF1F\uFF1F"
-				),
-				_react2.default.createElement(_Son2.default, { a: this.state.a, show: this.show.bind(this) }),
-				_react2.default.createElement("input", { type: "text",
-					value: this.state.value,
-					onChange: function onChange(e) {
-						_this2.changeHandeler(e.target.value);
-					} })
+				this.showPicker(),
+				this.showView()
 			);
 		}
 	}]);
 
-	return Clean;
+	return Canlender;
 }(_react2.default.Component);
-// export default class Clean extends React.Component{
-// 	constructor(props){
-// 		super(props);
-// 		this.state = {
-// 			"a": 100,
-// 			"flag" : true
-// 		}
-// 	}
-// 	add(){
-// 		this.setState({
-// 			"a": this.state.a + 1
-// 		})
-// 	}
 
-// 	showOrhide(){
-// 		this.setState({
-// 			"flag":!this.state.flag
-// 		})
-// 	}
-// 	render(){
-// 		const show = ()=>{
-// 		return	this.state.flag ? <div className='box'></div> : null
-// 		}
-// 		return <div>
-// 			<button onClick={this.showOrhide.bind(this)}>点我切换</button>
-// 			{show()}
-// 			</div>
-// 	}
-// }
-
-
-// // export default class Clean extends React.Component{
-// 	constructor(props){
-// 		super(props);
-// 		this.state = {
-// 			"b":205
-// 		}
-// 	}
-// 	reduce(){
-// 		this.setState({
-// 			"b": this.state.b - 1
-// 		})
-// 	}
-// 	add(){
-// 		this.setState({
-// 			"b":this.state.b + 1
-// 		})
-// 	}
-// 	render(){
-// 		return <div>
-// 		<h1>{this.state.b}</h1>
-// 		<button onClick={this.reduce.bind(this)}>点我减一</button>&nbsp;
-// 		<button onClick={this.add.bind(this)}>点我减一</button>
-// 		</div>
-// 	}  
-// }
-// export default class Clean extends React.Component{
-// 	constructor (props){
-// 		super(props);
-// 		this.state = {
-// 			"a":100
-// 		}
-// 	}
-// 	add(){
-// 		this.setState({
-// 			"a" : this.state.a + 1
-// 		})
-// 	}
-// 	render(){
-// 		return <div>
-// 			<h1>{this.state.a}</h1>
-// 			<button  onClick={this.add.bind(this)}>点我</button>
-// 		</div>
-// 	}
-// } 
-
-
-exports.default = Clean;
+exports.default = Canlender;
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
-  Copyright (c) 2017 Jed Watson.
-  Licensed under the MIT License (MIT), see
-  http://jedwatson.github.io/classnames
-*/
-/* global define */
+"use strict";
 
-(function () {
-	'use strict';
 
-	var hasOwn = {}.hasOwnProperty;
+Object.defineProperty(exports, "__esModule", {
+	value: true
+});
 
-	function classNames () {
-		var classes = [];
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-		for (var i = 0; i < arguments.length; i++) {
-			var arg = arguments[i];
-			if (!arg) continue;
+var _react = __webpack_require__(0);
 
-			var argType = typeof arg;
+var _react2 = _interopRequireDefault(_react);
 
-			if (argType === 'string' || argType === 'number') {
-				classes.push(arg);
-			} else if (Array.isArray(arg) && arg.length) {
-				var inner = classNames.apply(null, arg);
-				if (inner) {
-					classes.push(inner);
-				}
-			} else if (argType === 'object') {
-				for (var key in arg) {
-					if (hasOwn.call(arg, key) && arg[key]) {
-						classes.push(key);
+var _classnames = __webpack_require__(6);
+
+var _classnames2 = _interopRequireDefault(_classnames);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Author: 21746209
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:35:01
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified by:   21746209
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-28 12:40:32
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+
+
+var YearView = function (_React$Component) {
+	_inherits(YearView, _React$Component);
+
+	function YearView(props) {
+		_classCallCheck(this, YearView);
+
+		return _possibleConstructorReturn(this, (YearView.__proto__ || Object.getPrototypeOf(YearView)).call(this, props));
+	}
+
+	_createClass(YearView, [{
+		key: "render",
+		value: function render() {
+			var _props = this.props,
+			    year = _props.year,
+			    setYear = _props.setYear,
+			    setView = _props.setView;
+
+			var dangqiannian = year - year % 10;
+			var qianshinian = dangqiannian - 10;
+			var houshinian = dangqiannian + 10;
+			function showYear() {
+				var Arr = [];
+
+				var _loop = function _loop(i) {
+					temp = [];
+
+					for (var j = 0; j < 3; j++) {
+						temp = [_react2.default.createElement(
+							"td",
+							{
+								className: (0, _classnames2.default)({ "hong": year == qianshinian + i }),
+								onClick: function onClick() {
+									setYear(qianshinian + i);setView("month");
+								}
+							},
+							qianshinian + i
+						), _react2.default.createElement(
+							"td",
+							{
+								className: (0, _classnames2.default)({ "hong": year == dangqiannian + i }),
+								onClick: function onClick() {
+									setYear(dangqiannian + i);setView("month");
+								}
+							},
+							dangqiannian + i
+						), _react2.default.createElement(
+							"td",
+							{
+								className: (0, _classnames2.default)({ "hong": year == houshinian + i }),
+								onClick: function onClick() {
+									setYear(houshinian + i);setView("month");
+								}
+							},
+							houshinian + i
+						)];
 					}
+					Arr.push(_react2.default.createElement(
+						"tr",
+						null,
+						temp
+					));
+				};
+
+				for (var i = 0; i < 10; i++) {
+					var temp;
+
+					_loop(i);
 				}
+				return Arr;
 			}
+			return _react2.default.createElement(
+				"div",
+				null,
+				_react2.default.createElement(
+					"table",
+					null,
+					_react2.default.createElement(
+						"tbody",
+						null,
+						showYear()
+					)
+				)
+			);
 		}
+	}]);
 
-		return classes.join(' ');
-	}
+	return YearView;
+}(_react2.default.Component);
 
-	if (typeof module !== 'undefined' && module.exports) {
-		classNames.default = classNames;
-		module.exports = classNames;
-	} else if (true) {
-		// register as 'classnames', consistent with npm package name
-		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = function () {
-			return classNames;
-		}.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else {
-		window.classNames = classNames;
-	}
-}());
-
+exports.default = YearView;
 
 /***/ }),
 /* 28 */
@@ -20831,13 +20712,11 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Son = __webpack_require__(12);
+var _classnames = __webpack_require__(6);
 
-var _Son2 = _interopRequireDefault(_Son);
+var _classnames2 = _interopRequireDefault(_classnames);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -20845,119 +20724,89 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-07-14 11:03:58
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:35:12
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-08 19:18:54
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-28 12:48:08
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-var Shopping = function (_React$Component) {
-	_inherits(Shopping, _React$Component);
+var MonthView = function (_React$Component) {
+	_inherits(MonthView, _React$Component);
 
-	function Shopping(props) {
-		_classCallCheck(this, Shopping);
+	function MonthView(props) {
+		_classCallCheck(this, MonthView);
 
-		var _this = _possibleConstructorReturn(this, (Shopping.__proto__ || Object.getPrototypeOf(Shopping)).call(this, props));
-
-		_this.state = {
-			"r": 250,
-			"g": 150,
-			"b": 255,
-			"name": "",
-			"txt": "张小二",
-			"i": 10,
-			"j": 10
-		};
-		return _this;
+		return _possibleConstructorReturn(this, (MonthView.__proto__ || Object.getPrototypeOf(MonthView)).call(this, props));
 	}
 
-	_createClass(Shopping, [{
-		key: "changeColor",
-		value: function changeColor(color, value) {
-			this.setState(_defineProperty({}, color, value));
-		}
-	}, {
-		key: "change",
-		value: function change(e) {
-			this.setState({
-				"name": e
-			});
-		}
-	}, {
+	_createClass(MonthView, [{
 		key: "render",
 		value: function render() {
-			var _this2 = this;
+			var month = this.props.month;
+			var setMonth = this.props.setMonth;
+			var setView = this.props.setView;
+			function showMonth() {
+				var Arr = [];
 
+				var _loop = function _loop(j) {
+					temp = [];
+
+					temp = [_react2.default.createElement(
+						"td",
+						{
+							className: (0, _classnames2.default)({ "hong": month == j }),
+							onClick: function onClick() {
+								setMonth(j);setView("day");
+							}
+						},
+						j,
+						"\u6708"
+					), _react2.default.createElement(
+						"td",
+						{
+							className: (0, _classnames2.default)({ "hong": month == j + 6 }),
+							onClick: function onClick() {
+								setMonth(j + 6);setView("day");
+							}
+						},
+						j + 6,
+						"\u6708"
+					)];
+					Arr.push(_react2.default.createElement(
+						"tr",
+						null,
+						temp
+					));
+				};
+
+				for (var j = 1; j < 7; j++) {
+					var temp;
+
+					_loop(j);
+				}
+				return Arr;
+			}
 			return _react2.default.createElement(
 				"div",
 				null,
+				"\u8BF7\u9009\u62E9\u6708\u4EFD",
 				_react2.default.createElement(
-					"p",
-					null,
-					this.state.name
-				),
-				"\u59D3\u540D\uFF1A",
-				_react2.default.createElement("input", { type: "text", value: this.state.name, onChange: function onChange(e) {
-						_this2.change(e.target.value);
-					} }),
-				"\u5E74\u9F84\uFF1A",
-				_react2.default.createElement("input", { type: "text" }),
-				_react2.default.createElement("textarea", {
-					style: { "backgroundColor": "rgb(" + this.state.r + "," + this.state.g + "," + this.state.b + ")" },
-					cols: "30",
-					rows: "10",
-					value: this.state.txt,
-					onChange: function onChange(e) {
-						_this2.setState({ "txt": e.target.value });
-					}
-				}),
-				_react2.default.createElement(
-					"span",
-					null,
-					"\u5B57\u6570\uFF1A ",
-					this.state.txt.length,
-					" / 140"
-				),
-				_react2.default.createElement("div", { className: "box",
-					style: { "backgroundColor": "rgb(" + this.state.r + "," + this.state.g + "," + this.state.b + ")" }
-				}),
-				_react2.default.createElement(
-					"div",
+					"table",
 					null,
 					_react2.default.createElement(
-						"p",
+						"tbody",
 						null,
-						_react2.default.createElement("input", { type: "range",
-							onChange: function onChange(e) {
-								_this2.changeColor("r", e.target.value);
-							} })
-					),
-					_react2.default.createElement(
-						"p",
-						null,
-						_react2.default.createElement("input", { type: "range",
-							onChange: function onChange(e) {
-								_this2.changeColor("g", e.target.value);
-							} })
-					),
-					_react2.default.createElement(
-						"p",
-						null,
-						_react2.default.createElement("input", { type: "range",
-							onChange: function onChange(e) {
-								_this2.changeColor("b", e.target.value);
-							} })
+						showMonth()
 					)
-				),
-				_react2.default.createElement(_Son2.default, { txt: this.state.txt })
+				)
 			);
 		}
 	}]);
 
-	return Shopping;
+	return MonthView;
 }(_react2.default.Component);
 
-exports.default = Shopping;
+exports.default = MonthView;
 
 /***/ }),
 /* 29 */
@@ -20984,27 +20833,28 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-09 18:52:56
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:35:19
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-19 19:25:03
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-27 16:08:41
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-var MonthView = function (_React$Component) {
-	_inherits(MonthView, _React$Component);
+var DayView = function (_React$Component) {
+	_inherits(DayView, _React$Component);
 
-	function MonthView(props) {
-		_classCallCheck(this, MonthView);
+	function DayView(props) {
+		_classCallCheck(this, DayView);
 
-		return _possibleConstructorReturn(this, (MonthView.__proto__ || Object.getPrototypeOf(MonthView)).call(this, props));
+		return _possibleConstructorReturn(this, (DayView.__proto__ || Object.getPrototypeOf(DayView)).call(this, props));
 	}
 
-	_createClass(MonthView, [{
+	_createClass(DayView, [{
 		key: "render",
 		value: function render() {
 			var _props = this.props,
 			    year = _props.year,
-			    month = _props.month;
+			    month = _props.month,
+			    setView = _props.setView;
 
 			var benyue1haoxingqiji = new Date(year, month - 1, 1).getDay();
 			var benyuegongjitian = new Date(new Date(year, month, 1) - 1).getDate();
@@ -21017,50 +20867,39 @@ var MonthView = function (_React$Component) {
 			while (benyuegongjitian--) {
 				arr.push(count++);
 			}
-			var zongxiangshu = arr.length > 35 ? 42 : 35;
-			count = 1;
-			while (arr.length != zongxiangshu) {
+			var zongtianshu = arr.length > 35 ? 42 : 35;
+			var count = 1;
+			while (arr.length != zongtianshu) {
 				arr.push(count++);
 			}
-			var Arr = [];
-			for (var i = 0; i < zongxiangshu / 7; i++) {
-				Arr.push(arr.slice(i * 7, i * 7 + 7));
-			}
-			function showARR() {
-				var domArr = [];
+			function showDay() {
+				var Arr = [];
 				for (var i = 0; i < arr.length / 7; i++) {
 					var temp = [];
 					for (var j = 0; j < 7; j++) {
 						temp.push(_react2.default.createElement(
 							"td",
-							{ key: j },
-							Arr[i][j]
+							null,
+							arr[i * 7 + j]
 						));
 					}
-					domArr.push(_react2.default.createElement(
+					Arr.push(_react2.default.createElement(
 						"tr",
-						{ key: i },
+						null,
 						temp
 					));
 				}
-				return domArr;
+				return Arr;
 			}
+
 			return _react2.default.createElement(
 				"div",
 				null,
 				_react2.default.createElement(
-					"h3",
-					null,
-					year,
-					"\u5E74",
-					month,
-					"\u6708\u65E5\u5386"
-				),
-				_react2.default.createElement(
 					"table",
 					null,
 					_react2.default.createElement(
-						"tbody",
+						"thead",
 						null,
 						_react2.default.createElement(
 							"tr",
@@ -21100,18 +20939,22 @@ var MonthView = function (_React$Component) {
 								null,
 								"\u516D"
 							)
-						),
-						showARR()
+						)
+					),
+					_react2.default.createElement(
+						"tbody",
+						null,
+						showDay()
 					)
 				)
 			);
 		}
 	}]);
 
-	return MonthView;
+	return DayView;
 }(_react2.default.Component);
 
-exports.default = MonthView;
+exports.default = DayView;
 
 /***/ }),
 /* 30 */
@@ -21130,13 +20973,9 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Copy = __webpack_require__(31);
+var _classnames = __webpack_require__(6);
 
-var _Copy2 = _interopRequireDefault(_Copy);
-
-var _CopyYear = __webpack_require__(32);
-
-var _CopyYear2 = _interopRequireDefault(_CopyYear);
+var _classnames2 = _interopRequireDefault(_classnames);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21146,140 +20985,87 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-18 20:24:33
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:35:30
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-19 16:44:13
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-28 13:06:59
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-var CopyFather = function (_React$Component) {
-	_inherits(CopyFather, _React$Component);
+var MonthPciker = function (_React$Component) {
+	_inherits(MonthPciker, _React$Component);
 
-	function CopyFather(props) {
-		_classCallCheck(this, CopyFather);
+	function MonthPciker(props) {
+		_classCallCheck(this, MonthPciker);
 
-		var _this = _possibleConstructorReturn(this, (CopyFather.__proto__ || Object.getPrototypeOf(CopyFather)).call(this, props));
-
-		_this.state = {
-			"year": 2018,
-			"month": 8,
-			"view": true
-		};
-		return _this;
+		return _possibleConstructorReturn(this, (MonthPciker.__proto__ || Object.getPrototypeOf(MonthPciker)).call(this, props));
 	}
 
-	_createClass(CopyFather, [{
-		key: "changeView",
-		value: function changeView() {
-			this.setState({
-				view: !this.state.view
-			});
-		}
-	}, {
-		key: "setYear",
-		value: function setYear(year) {
-			this.setState({
-				year: year
-			});
+	_createClass(MonthPciker, [{
+		key: "goPrevMonth",
+		value: function goPrevMonth() {
+			console.log("月减");
+			if (this.props.month == 1) {
+				this.props.setMonth(12);
+				this.props.setYear(this.props.year - 1);
+			} else {
+				this.props.setMonth(this.props.month - 1);
+			}
 		}
 	}, {
 		key: "goNextMonth",
 		value: function goNextMonth() {
-			if (this.state.month == 12) {
-				this.setState({
-					"year": this.state.year + 1,
-					"month": 1
-				});
+			console.log("月加");
+			if (this.props.month == 12) {
+				this.props.setMonth(1);
+				this.props.setYear(this.props.year + 1);
 			} else {
-				this.setState({
-					"month": this.state.month + 1
-				});
+				this.props.setMonth(this.props.month + 1);
 			}
-		}
-	}, {
-		key: "goPrevMonth",
-		value: function goPrevMonth() {
-			if (this.state.month == 1) {
-				this.setState({
-					year: this.state.year - 1,
-					month: 12
-				});
-			} else {
-				this.setState({
-					month: this.state.month - 1
-				});
-			}
-		}
-	}, {
-		key: "goPrev10Year",
-		value: function goPrev10Year() {
-			this.setState({
-				year: this.state.year - 10
-			});
-		}
-	}, {
-		key: "goNext10Year",
-		value: function goNext10Year() {
-			this.setState({
-				year: this.state.year + 10
-			});
 		}
 	}, {
 		key: "render",
 		value: function render() {
+			var _this2 = this;
+
+			var year = this.props.year;
+			var month = this.props.month;
 			return _react2.default.createElement(
 				"div",
 				null,
-				this.state.view == true ? _react2.default.createElement(
-					"h3",
-					null,
-					_react2.default.createElement(
-						"button",
-						{ onClick: this.goPrev10Year.bind(this) },
-						"-"
-					),
-					_react2.default.createElement(
-						"span",
-						{ onClick: this.changeView.bind(this) },
-						this.state.year,
-						"\u5E74"
-					),
-					_react2.default.createElement(
-						"button",
-						{ onClick: this.goNext10Year.bind(this) },
-						"+"
-					)
-				) : _react2.default.createElement(
-					"h3",
-					null,
-					_react2.default.createElement(
-						"button",
-						{ onClick: this.goPrevMonth.bind(this) },
-						"-"
-					),
-					_react2.default.createElement(
-						"span",
-						{ onClick: this.changeView.bind(this) },
-						this.state.year,
-						"\u5E74"
-					),
-					this.state.month,
-					"\u6708",
-					_react2.default.createElement(
-						"button",
-						{ onClick: this.goNextMonth.bind(this) },
-						"+"
-					)
+				_react2.default.createElement(
+					"button",
+					{ onClick: this.goPrevMonth.bind(this) },
+					"-"
 				),
-				this.state.view == true ? _react2.default.createElement(_CopyYear2.default, { year: this.state.year, setYear: this.setYear.bind(this) }) : _react2.default.createElement(_Copy2.default, { year: this.state.year, month: this.state.month })
+				_react2.default.createElement(
+					"span",
+					{ onClick: function onClick() {
+							return _this2.props.setView("year");
+						} },
+					year,
+					"\u5E74"
+				),
+				_react2.default.createElement(
+					"span",
+					{ onClick: function onClick() {
+							return _this2.props.setView("month");
+						} },
+					month,
+					"\u6708"
+				),
+				_react2.default.createElement(
+					"button",
+					{ onClick: this.goNextMonth.bind(this) },
+					"+"
+				)
 			);
 		}
 	}]);
 
-	return CopyFather;
+	return MonthPciker;
 }(_react2.default.Component);
 
-exports.default = CopyFather;
+exports.default = MonthPciker;
 
 /***/ }),
 /* 31 */
@@ -21298,10 +21084,6 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _solarLunar = __webpack_require__(33);
-
-var _solarLunar2 = _interopRequireDefault(_solarLunar);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -21310,282 +21092,61 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-18 17:42:54
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-22 20:35:47
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-19 19:26:21
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-27 16:43:23
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                */
 
 
-var Copy = function (_React$Component) {
-	_inherits(Copy, _React$Component);
+var YearPicker = function (_React$Component) {
+	_inherits(YearPicker, _React$Component);
 
-	function Copy(props) {
-		_classCallCheck(this, Copy);
+	function YearPicker(props) {
+		_classCallCheck(this, YearPicker);
 
-		return _possibleConstructorReturn(this, (Copy.__proto__ || Object.getPrototypeOf(Copy)).call(this, props));
+		return _possibleConstructorReturn(this, (YearPicker.__proto__ || Object.getPrototypeOf(YearPicker)).call(this, props));
 	}
 
-	_createClass(Copy, [{
-		key: "render",
-		value: function render() {
-			var _props = this.props,
-			    year = _props.year,
-			    month = _props.month;
-
-			var benyue1haoxingqiji = new Date(year, month - 1, 1).getDay();
-			var benyuegongjitian = new Date(new Date(year, month, 1) - 1).getDate();
-			var shangyuegongjitian = new Date(new Date(year, month - 1) - 1).getDate();
-			var arr = [];
-			while (benyue1haoxingqiji--) {
-				arr.unshift(shangyuegongjitian--);
-			}
-			var count = 1;
-			while (benyuegongjitian--) {
-				arr.push(count++);
-			}
-			count = 1;
-			var zougongjitian = arr.length > 35 ? 42 : 35;
-			while (arr.length != zougongjitian) {
-				arr.push(count++);
-			}
-			var Arr = [];
-			for (var i = 0; i < arr.length / 7; i++) {
-				Arr.push(arr.slice(i * 7, i * 7 + 7));
-			}
-			// slice方法从哪里开始到哪里结束
-			// function showDay(){
-			// 	for(var i=0;i<arr.length / 7;i++){
-			// 		var domArr = [];
-			// 		for(var j=0;j<7;j++){
-			// 			var temp = [];
-			// 			temp.push(<td key={j}>{arr[i*7+j]}</td>)
-			// 		}
-			// 		domArr.push(<tr key={i}>{temp}<tr>)
-			// 	}
-			// }
-			//solarLunar.solar2lunar(year,month-1,arr[i*7+j]).dayCn这套方法就是把当前的农历转换为阴历
-			//部分的转换问题主要是使月份温和
-			function showDay() {
-				var domArr = [];
-				for (var i = 0; i < arr.length / 7; i++) {
-					var temp = [];
-					for (var j = 0; j < 7; j++) {
-						if (i * 7 + j < benyue1haoxingqiji) {
-							//上个月的尾巴
-							temp.push(_react2.default.createElement(
-								"td",
-								null,
-								arr[i * 7 + j],
-								_react2.default.createElement("br", null),
-								_solarLunar2.default.solar2lunar(year, month - 1, arr[i * 7 + j]).dayCn
-							));
-						} else if (i * 7 + j > benyue1haoxingqiji + benyuegongjitian) {
-							temp.push(_react2.default.createElement(
-								"td",
-								null,
-								arr[i * 7 + j],
-								_react2.default.createElement("br", null),
-								_solarLunar2.default.solar2lunar(year, month - 1, arr[i * 7 + j]).dayCn
-							));
-						} else {
-							temp.push(_react2.default.createElement(
-								"td",
-								null,
-								arr[i * 7 + j],
-								_react2.default.createElement("br", null),
-								_solarLunar2.default.solar2lunar(year, month, arr[i * 7 + j]).dayCn
-							));
-						}
-					}
-					domArr.push(_react2.default.createElement(
-						"tr",
-						null,
-						temp
-					));
-				}
-				return domArr;
-			}
-			return _react2.default.createElement(
-				"div",
-				{ className: "center" },
-				_react2.default.createElement(
-					"table",
-					null,
-					_react2.default.createElement(
-						"tbody",
-						null,
-						_react2.default.createElement(
-							"tr",
-							null,
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u65E5"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u4E00"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u4E8C"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u4E09"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u56DB"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u4E94"
-							),
-							_react2.default.createElement(
-								"th",
-								null,
-								"\u516D"
-							)
-						),
-						showDay()
-					)
-				)
-			);
+	_createClass(YearPicker, [{
+		key: "goPrevYear",
+		value: function goPrevYear() {
+			this.props.setYear(this.props.year - 10);
 		}
-	}]);
-
-	return Copy;
-}(_react2.default.Component);
-
-exports.default = Copy;
-
-/***/ }),
-/* 32 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-	value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = __webpack_require__(0);
-
-var _react2 = _interopRequireDefault(_react);
-
-var _classnames = __webpack_require__(27);
-
-var _classnames2 = _interopRequireDefault(_classnames);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Author: 21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Date:   2018-08-19 15:52:31
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified by:   21746209
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               * @Last Modified time: 2018-08-19 16:35:54
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var CopyYear = function (_React$Component) {
-	_inherits(CopyYear, _React$Component);
-
-	function CopyYear(props) {
-		_classCallCheck(this, CopyYear);
-
-		return _possibleConstructorReturn(this, (CopyYear.__proto__ || Object.getPrototypeOf(CopyYear)).call(this, props));
-	}
-
-	_createClass(CopyYear, [{
+	}, {
+		key: "goNextYear",
+		value: function goNextYear() {
+			this.props.setYear(this.props.year + 10);
+		}
+	}, {
 		key: "render",
 		value: function render() {
-			var year = this.props.year;
-			var setYear = this.props.setYear;
-			var dangqiannian = year - year % 10;
-			var shangshinian = dangqiannian - 10;
-			var xiashinian = dangqiannian + 10;
-
-			function show10Year() {
-				var Year = [];
-
-				var _loop = function _loop(i) {
-					temp = [];
-
-					for (var j = 0; j < 3; j++) {
-						temp = [_react2.default.createElement(
-							"td",
-							{ onClick: function onClick() {
-									return setYear(shangshinian + i);
-								} },
-							shangshinian + i
-						), _react2.default.createElement(
-							"td",
-							{
-								className: (0, _classnames2.default)({ "hong": year == dangqiannian + i }),
-								onClick: function onClick() {
-									return setYear(dangqiannian + i);
-								} },
-							dangqiannian + i
-						), _react2.default.createElement(
-							"td",
-							{ onClick: function onClick() {
-									return setYear(xiashinian + i);
-								} },
-							xiashinian + i
-						)];
-					}
-					Year.push(_react2.default.createElement(
-						"tr",
-						null,
-						temp
-					));
-				};
-
-				for (var i = 0; i < 10; i++) {
-					var temp;
-
-					_loop(i);
-				}
-				return Year;
-			}
 			return _react2.default.createElement(
 				"div",
 				null,
 				_react2.default.createElement(
-					"table",
+					"button",
+					{ onClick: this.goPrevYear.bind(this) },
+					"\u524D\u5341\u5E74"
+				),
+				_react2.default.createElement(
+					"span",
 					null,
-					_react2.default.createElement(
-						"tbody",
-						null,
-						show10Year()
-					)
+					this.props.year,
+					"\u5E74"
+				),
+				_react2.default.createElement(
+					"button",
+					{ onClick: this.goNextYear.bind(this) },
+					"\u540E\u5341\u5E74"
 				)
 			);
 		}
 	}]);
 
-	return CopyYear;
+	return YearPicker;
 }(_react2.default.Component);
 
-exports.default = CopyYear;
-
-/***/ }),
-/* 33 */
-/***/ (function(module, exports, __webpack_require__) {
-
-!function(b,f){ true?module.exports=f():"function"==typeof define&&define.amd?define("solarlunar",[],f):"object"==typeof exports?exports.solarlunar=f():b.solarlunar=f()}(this,function(){return function(b){function f(c){if(e[c])return e[c].exports;var t=e[c]={i:c,l:!1,exports:{}};return b[c].call(t.exports,t,t.exports,f),t.l=!0,t.exports}var e={};return f.m=b,f.c=e,f.d=function(b,e,c){f.o(b,e)||Object.defineProperty(b,e,{configurable:!1,enumerable:!0,get:c})},f.n=function(b){var e=b&&b.__esModule?function(){return b.default}:function(){return b};return f.d(e,"a",e),e},f.o=function(b,f){return Object.prototype.hasOwnProperty.call(b,f)},f.p="",f(f.s=0)}([function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0});var c=e(1),t=function(b){return b&&b.__esModule?b:{default:b}}(c);f.default=t.default,b.exports=f.default},function(b,f,e){"use strict";function c(b){return b&&b.__esModule?b:{default:b}}Object.defineProperty(f,"__esModule",{value:!0});var t=e(2),r=c(t),a=e(3),n=c(a),d=e(4),u=c(d),s=e(5),o=c(s),l=e(6),i=c(l),p=e(7),y=c(p),h=e(8),v=c(h),M=e(9),g=c(M),_=e(10),D=c(_),x=e(11),m=c(x),j=e(12),I=c(j),S={lunarInfo:r.default,solarMonth:n.default,gan:u.default,zhi:o.default,animals:i.default,lunarTerm:y.default,lTermInfo:v.default,nStr1:g.default,nStr2:D.default,nStr3:m.default,nStr4:I.default,lYearDays:function(b){var f,e=348;for(f=32768;f>8;f>>=1)e+=S.lunarInfo[b-1900]&f?1:0;return e+S.leapDays(b)},leapMonth:function(b){return 15&S.lunarInfo[b-1900]},leapDays:function(b){return S.leapMonth(b)?65536&S.lunarInfo[b-1900]?30:29:0},monthDays:function(b,f){return f>12||f<1?-1:S.lunarInfo[b-1900]&65536>>f?30:29},solarDays:function(b,f){if(f>12||f<1)return-1;var e=f-1;return 1==e?b%4==0&&b%100!=0||b%400==0?29:28:S.solarMonth[e]},toGanZhi:function(b){return S.gan[b%10]+S.zhi[b%12]},getTerm:function(b,f){if(b<1900||b>2100)return-1;if(f<1||f>24)return-1;var e=S.lTermInfo[b-1900],c=[parseInt("0x"+e.substr(0,5)).toString(),parseInt("0x"+e.substr(5,5)).toString(),parseInt("0x"+e.substr(10,5)).toString(),parseInt("0x"+e.substr(15,5)).toString(),parseInt("0x"+e.substr(20,5)).toString(),parseInt("0x"+e.substr(25,5)).toString()],t=[c[0].substr(0,1),c[0].substr(1,2),c[0].substr(3,1),c[0].substr(4,2),c[1].substr(0,1),c[1].substr(1,2),c[1].substr(3,1),c[1].substr(4,2),c[2].substr(0,1),c[2].substr(1,2),c[2].substr(3,1),c[2].substr(4,2),c[3].substr(0,1),c[3].substr(1,2),c[3].substr(3,1),c[3].substr(4,2),c[4].substr(0,1),c[4].substr(1,2),c[4].substr(3,1),c[4].substr(4,2),c[5].substr(0,1),c[5].substr(1,2),c[5].substr(3,1),c[5].substr(4,2)];return parseInt(t[f-1])},toChinaYear:function(b){var f=parseInt(b/1e3),e=parseInt(b%1e3/100),c=parseInt(b%100/10),t=b%10;return S.nStr4[f]+S.nStr4[e]+S.nStr4[c]+S.nStr4[t]+"年"},toChinaMonth:function(b){if(b>12||b<1)return-1;var f=S.nStr3[b-1];return f+="月"},toChinaDay:function(b){var f;switch(b){case 10:f="初十";break;case 20:f="二十";break;case 30:f="三十";break;default:f=S.nStr2[Math.floor(b/10)],f+=S.nStr1[b%10]}return f},getAnimal:function(b){return S.animals[(b-4)%12]},solar2lunar:function(b,f,e){if(b<1900||b>2100)return-1;if(1900==b&&1==f&&e<31)return-1;if(b)var c=new Date(b,parseInt(f)-1,e);else var c=new Date;var t,r=0,a=0,b=c.getFullYear(),f=c.getMonth()+1,e=c.getDate(),n=(Date.UTC(c.getFullYear(),c.getMonth(),c.getDate())-Date.UTC(1900,0,31))/864e5;for(t=1900;t<2101&&n>0;t++)a=S.lYearDays(t),n-=a;n<0&&(n+=a,t--);var d=new Date,u=!1;d.getFullYear()==b&&d.getMonth()+1==f&&d.getDate()==e&&(u=!0);var s=c.getDay(),o=S.nStr1[s];0==s&&(s=7);var l=t,r=S.leapMonth(t),i=!1;for(t=1;t<13&&n>0;t++)r>0&&t==r+1&&0==i?(--t,i=!0,a=S.leapDays(l)):a=S.monthDays(l,t),1==i&&t==r+1&&(i=!1),n-=a;0==n&&r>0&&t==r+1&&(i?i=!1:(i=!0,--t)),n<0&&(n+=a,--t);var p=t,y=n+1,h=f-1,v=S.getTerm(l,3),M=S.toGanZhi(l-4);M=h<2&&e<v?S.toGanZhi(l-5):S.toGanZhi(l-4);var g=S.getTerm(b,2*f-1),_=S.getTerm(b,2*f),D=S.toGanZhi(12*(b-1900)+f+11);e>=g&&(D=S.toGanZhi(12*(b-1900)+f+12));var x=!1,m="";g==e&&(x=!0,m=S.lunarTerm[2*f-2]),_==e&&(x=!0,m=S.lunarTerm[2*f-1]);var j=Date.UTC(b,h,1,0,0,0,0)/864e5+25567+10,I=S.toGanZhi(j+e-1);return{lYear:l,lMonth:p,lDay:y,animal:S.getAnimal(l),yearCn:S.toChinaYear(l),monthCn:(i?"闰":"")+S.toChinaMonth(p),dayCn:S.toChinaDay(y),cYear:b,cMonth:f,cDay:e,gzYear:M,gzMonth:D,gzDay:I,isToday:u,isLeap:i,nWeek:s,ncWeek:"星期"+o,isTerm:x,term:m}},lunar2solar:function(b,f,e,c){var t=S.leapMonth(b);S.leapDays(b);if(c&&t!=f)return-1;if(2100==b&&12==f&&e>1||1900==b&&1==f&&e<31)return-1;var r=S.monthDays(b,f);if(b<1900||b>2100||e>r)return-1;for(var a=0,n=1900;n<b;n++)a+=S.lYearDays(n);for(var d=0,u=!1,n=1;n<f;n++)d=S.leapMonth(b),u||d<=n&&d>0&&(a+=S.leapDays(b),u=!0),a+=S.monthDays(b,n);c&&(a+=r);var s=Date.UTC(1900,1,30,0,0,0),o=new Date(864e5*(a+e-31)+s),l=o.getUTCFullYear(),i=o.getUTCMonth()+1,p=o.getUTCDate();return S.solar2lunar(l,i,p)}};f.default=S,b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=[19416,19168,42352,21717,53856,55632,91476,22176,39632,21970,19168,42422,42192,53840,119381,46400,54944,44450,38320,84343,18800,42160,46261,27216,27968,109396,11104,38256,21234,18800,25958,54432,59984,28309,23248,11104,100067,37600,116951,51536,54432,120998,46416,22176,107956,9680,37584,53938,43344,46423,27808,46416,86869,19872,42416,83315,21168,43432,59728,27296,44710,43856,19296,43748,42352,21088,62051,55632,23383,22176,38608,19925,19152,42192,54484,53840,54616,46400,46752,103846,38320,18864,43380,42160,45690,27216,27968,44870,43872,38256,19189,18800,25776,29859,59984,27480,21952,43872,38613,37600,51552,55636,54432,55888,30034,22176,43959,9680,37584,51893,43344,46240,47780,44368,21977,19360,42416,86390,21168,43312,31060,27296,44368,23378,19296,42726,42208,53856,60005,54576,23200,30371,38608,19415,19152,42192,118966,53840,54560,56645,46496,22224,21938,18864,42359,42160,43600,111189,27936,44448,84835,37744,18936,18800,25776,92326,59984,27424,108228,43744,41696,53987,51552,54615,54432,55888,23893,22176,42704,21972,21200,43448,43344,46240,46758,44368,21920,43940,42416,21168,45683,26928,29495,27296,44368,84821,19296,42352,21732,53600,59752,54560,55968,92838,22224,19168,43476,41680,53584,62034,54560],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=[31,28,31,30,31,30,31,31,30,31,30,31],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["鼠","牛","虎","兔","龙","蛇","马","羊","猴","鸡","狗","猪"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["小寒","大寒","立春","雨水","惊蛰","春分","清明","谷雨","立夏","小满","芒种","夏至","小暑","大暑","立秋","处暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c3598082c95f8c965cc920f","97bd0b06bdb0722c965ce1cfcc920f","b027097bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c359801ec95f8c965cc920f","97bd0b06bdb0722c965ce1cfcc920f","b027097bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c359801ec95f8c965cc920f","97bd0b06bdb0722c965ce1cfcc920f","b027097bd097c36b0b6fc9274c91aa","9778397bd19801ec9210c965cc920e","97b6b97bd19801ec95f8c965cc920f","97bd09801d98082c95f8e1cfcc920f","97bd097bd097c36b0b6fc9210c8dc2","9778397bd197c36c9210c9274c91aa","97b6b97bd19801ec95f8c965cc920e","97bd09801d98082c95f8e1cfcc920f","97bd097bd097c36b0b6fc9210c8dc2","9778397bd097c36c9210c9274c91aa","97b6b97bd19801ec95f8c965cc920e","97bcf97c3598082c95f8e1cfcc920f","97bd097bd097c36b0b6fc9210c8dc2","9778397bd097c36c9210c9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c3598082c95f8c965cc920f","97bd097bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c3598082c95f8c965cc920f","97bd097bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c359801ec95f8c965cc920f","97bd097bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c359801ec95f8c965cc920f","97bd097bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf97c359801ec95f8c965cc920f","97bd097bd07f595b0b6fc920fb0722","9778397bd097c36b0b6fc9210c8dc2","9778397bd19801ec9210c9274c920e","97b6b97bd19801ec95f8c965cc920f","97bd07f5307f595b0b0bc920fb0722","7f0e397bd097c36b0b6fc9210c8dc2","9778397bd097c36c9210c9274c920e","97b6b97bd19801ec95f8c965cc920f","97bd07f5307f595b0b0bc920fb0722","7f0e397bd097c36b0b6fc9210c8dc2","9778397bd097c36c9210c9274c91aa","97b6b97bd19801ec9210c965cc920e","97bd07f1487f595b0b0bc920fb0722","7f0e397bd097c36b0b6fc9210c8dc2","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf7f1487f595b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf7f1487f595b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf7f1487f531b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c965cc920e","97bcf7f1487f531b0b0bb0b6fb0722","7f0e397bd07f595b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b97bd19801ec9210c9274c920e","97bcf7f0e47f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","9778397bd097c36b0b6fc9210c91aa","97b6b97bd197c36c9210c9274c920e","97bcf7f0e47f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","9778397bd097c36b0b6fc9210c8dc2","9778397bd097c36c9210c9274c920e","97b6b7f0e47f531b0723b0b6fb0722","7f0e37f5307f595b0b0bc920fb0722","7f0e397bd097c36b0b6fc9210c8dc2","9778397bd097c36b0b70c9274c91aa","97b6b7f0e47f531b0723b0b6fb0721","7f0e37f1487f595b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc9210c8dc2","9778397bd097c36b0b6fc9274c91aa","97b6b7f0e47f531b0723b0b6fb0721","7f0e27f1487f595b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","9778397bd097c36b0b6fc9274c91aa","97b6b7f0e47f531b0723b0787b0721","7f0e27f0e47f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","9778397bd097c36b0b6fc9210c91aa","97b6b7f0e47f149b0723b0787b0721","7f0e27f0e47f531b0723b0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","9778397bd097c36b0b6fc9210c8dc2","977837f0e37f149b0723b0787b0721","7f07e7f0e47f531b0723b0b6fb0722","7f0e37f5307f595b0b0bc920fb0722","7f0e397bd097c35b0b6fc9210c8dc2","977837f0e37f14998082b0787b0721","7f07e7f0e47f531b0723b0b6fb0721","7f0e37f1487f595b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc9210c8dc2","977837f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","977837f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd097c35b0b6fc920fb0722","977837f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","977837f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","977837f0e37f14998082b0787b06bd","7f07e7f0e47f149b0723b0787b0721","7f0e27f0e47f531b0b0bb0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","977837f0e37f14998082b0723b06bd","7f07e7f0e37f149b0723b0787b0721","7f0e27f0e47f531b0723b0b6fb0722","7f0e397bd07f595b0b0bc920fb0722","977837f0e37f14898082b0723b02d5","7ec967f0e37f14998082b0787b0721","7f07e7f0e47f531b0723b0b6fb0722","7f0e37f1487f595b0b0bb0b6fb0722","7f0e37f0e37f14898082b0723b02d5","7ec967f0e37f14998082b0787b0721","7f07e7f0e47f531b0723b0b6fb0722","7f0e37f1487f531b0b0bb0b6fb0722","7f0e37f0e37f14898082b0723b02d5","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e37f1487f531b0b0bb0b6fb0722","7f0e37f0e37f14898082b072297c35","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e37f0e37f14898082b072297c35","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e37f0e366aa89801eb072297c35","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f149b0723b0787b0721","7f0e27f1487f531b0b0bb0b6fb0722","7f0e37f0e366aa89801eb072297c35","7ec967f0e37f14998082b0723b06bd","7f07e7f0e47f149b0723b0787b0721","7f0e27f0e47f531b0723b0b6fb0722","7f0e37f0e366aa89801eb072297c35","7ec967f0e37f14998082b0723b06bd","7f07e7f0e37f14998083b0787b0721","7f0e27f0e47f531b0723b0b6fb0722","7f0e37f0e366aa89801eb072297c35","7ec967f0e37f14898082b0723b02d5","7f07e7f0e37f14998082b0787b0721","7f07e7f0e47f531b0723b0b6fb0722","7f0e36665b66aa89801e9808297c35","665f67f0e37f14898082b0723b02d5","7ec967f0e37f14998082b0787b0721","7f07e7f0e47f531b0723b0b6fb0722","7f0e36665b66a449801e9808297c35","665f67f0e37f14898082b0723b02d5","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e36665b66a449801e9808297c35","665f67f0e37f14898082b072297c35","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e26665b66a449801e9808297c35","665f67f0e37f1489801eb072297c35","7ec967f0e37f14998082b0787b06bd","7f07e7f0e47f531b0723b0b6fb0721","7f0e27f1487f531b0b0bb0b6fb0722"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["日","一","二","三","四","五","六","七","八","九","十"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["初","十","廿","卅"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["正","二","三","四","五","六","七","八","九","十","冬","腊"],b.exports=f.default},function(b,f,e){"use strict";Object.defineProperty(f,"__esModule",{value:!0}),f.default=["零","一","二","三","四","五","六","七","八","九","十"],b.exports=f.default}])});
+exports.default = YearPicker;
 
 /***/ })
 /******/ ]);
